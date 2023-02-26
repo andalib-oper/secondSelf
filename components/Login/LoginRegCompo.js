@@ -153,7 +153,7 @@ const LoginRegCompo = () => {
           <TouchableOpacity style={styles.forgotPassword} onPress={()=>{navigation.navigate('forgotPass')}}>
             <Text style={styles.forgotPasswordText}>Forget Password?</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('FeedStack')}>
             <Text style={styles.loginButtonText}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity

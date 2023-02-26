@@ -1,8 +1,12 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { Image,StyleSheet,TouchableOpacity } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Activities from '../src/mainTabs/Activities';
 import Feather from 'react-native-vector-icons/Feather'
-import Feed from '../src/mainTabs/Feed';
+import Chat from '../src/mainTabs/Chat';
+import Profile from '../src/mainTabs/Profile';
+import FeedStackNavigation from './FeedStackNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,10 +31,10 @@ function MainNavigation() {
       }}>
       <Tab.Screen
         name="Feeds"
-        component={Feed}
+        component={FeedStackNavigation}
         options={{
           tabBarIcon: ({color}) => (
-            <MaterialIcons name="dynamic-feed" color={color} size={26} />
+            <MaterialIcons name="dynamic-feed" color={color} size={26}/>
           ),
         }}
       />
@@ -41,8 +45,34 @@ function MainNavigation() {
           ),
         }}
       />
+        <Tab.Screen name="Chat" component={Chat} 
+        options={{
+          tabBarIcon: ({color}) => (
+            <AntDesign name="wechat" color={color} size={26} />
+          ),
+        }}
+      />
+        <Tab.Screen name="Profile" component={Profile} 
+        options={{
+          tabBarIcon: ({color}) => (
+            <AntDesign name="profile" color={color} size={26} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
 
 export default MainNavigation;
+
+
+const styles = StyleSheet.create({
+  image: {
+    height:40,
+    width:40,
+    margin:10
+  },
+  addButton:{
+    marginRight: '5%'
+  }
+})

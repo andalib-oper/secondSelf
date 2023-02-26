@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Feed = () => {
+const Chat = () => {
   return (
     <View>
-      <Text>Feed</Text>
+      <Text>Chat</Text>
     </View>
   )
 }
 
-export default Feed
+export default Chat
 
 const styles = StyleSheet.create({})
