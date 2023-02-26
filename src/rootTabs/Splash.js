@@ -2,11 +2,11 @@ import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import React,{useEffect} from 'react';
 
 const Splash = ({navigation}) => {
-  // useEffect(() => {
-  //  setTimeout(()=>{
-  //   navigation.navigate('FeedStack')
-  //  },30000)
-  // },[]);
+  useEffect(() => {
+   setTimeout(()=>{
+    navigation.navigate('login')
+   },3000)
+  },[]);
   return (
     <View style={styles.container}>
       <Image
@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   },
   image:{
-    height:windowHeight/3.2,
-    width:windowWidth/2,
+    height:windowHeight/2.5,
+    width:windowWidth/1.5,
     alignSelf: 'center'
   }
 });

@@ -1,8 +1,8 @@
 import {StyleSheet, Text, View, Image, Dimensions,ScrollView} from 'react-native';
 import React from 'react';
-import LoginRegCompo from '../../components/Login/LoginRegCompo';
+import ForgotPassword from '../../components/Login/ForgotPassword';
 
-const Login = ({navigation}) => {
+const ForgotPass = ({navigation}) => {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -11,14 +11,14 @@ const Login = ({navigation}) => {
         style={styles.image}
       />
       <View style={styles.loginView}>
-        <LoginRegCompo />
+        <ForgotPassword />
       </View>
       </ScrollView>
     </View>
   );
 };
 
-export default Login;
+export default ForgotPass;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
