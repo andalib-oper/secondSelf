@@ -23,10 +23,8 @@ function MainNavigation() {
           fontWeight: '500',
         },
         tabBarItemStyle: {
-          padding: 4,
-        },
-        tabBarStyle: {
-          height: 60,
+          padding: 1,
+          marginTop:3
         },
       }}>
       <Tab.Screen
@@ -34,28 +32,28 @@ function MainNavigation() {
         component={FeedStackNavigation}
         options={{
           tabBarIcon: ({color}) => (
-            <MaterialIcons name="dynamic-feed" color={color} size={26}/>
+            <MaterialIcons name="dynamic-feed" color={color} size={24}/>
           ),
         }}
       />
       <Tab.Screen name="Activities" component={Activities} 
         options={{
           tabBarIcon: ({color}) => (
-            <Feather name="activity" color={color} size={26} />
+            <Feather name="activity" color={color} size={24} />
           ),
         }}
       />
         <Tab.Screen name="Chat" component={Chat} 
         options={{
           tabBarIcon: ({color}) => (
-            <AntDesign name="wechat" color={color} size={26} />
+            <AntDesign name="wechat" color={color} size={24} />
           ),
         }}
       />
         <Tab.Screen name="Profile" component={Profile} 
         options={{
           tabBarIcon: ({color}) => (
-            <AntDesign name="profile" color={color} size={26} />
+            <AntDesign name="profile" color={color} size={22} />
           ),
         }}
       />
