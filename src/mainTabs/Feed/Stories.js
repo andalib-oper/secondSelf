@@ -14,16 +14,18 @@ const Stories = ({route}) => {
         images={stories}
         onComplete={() => navigation.goBack()}
         duration={5}
-        headerComponent={<View />}
+        headerComponent={<View style={{height:100}}>
+          <Text>fuck off</Text>
+        </View>}
         userProfile={{
-          userImage: stories[0],
+          userImage: stories[0] ,
           userName: 'Yuvraj Pandey',
           userMessage: 'Work hard & success will follow !!',
           imageArrow:
             'https://cdn.iconscout.com/icon/free/png-256/back-arrow-1767531-1502435.png',
           onImageClick: () => {
             console.log('lskndclksnc');
-            Alert.alert('User profile image tapped');
+           navigation.goBack()
           },
         }}
       />
