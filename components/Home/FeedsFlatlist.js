@@ -110,10 +110,9 @@ const styles = StyleSheet.create({
   sliderBoxView: {
     width: windowWidth / 1.2,
     height: windowHeight / 3,
-    marginRight: '10%',
+    marginRight: '7%',
     borderRadius: 15,
     marginTop: 5,
-    backgroundColor: 'red',
     alignSelf: 'center',
   },
   optionView: {

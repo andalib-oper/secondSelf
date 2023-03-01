@@ -5,19 +5,20 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import LoginInput from './LoginInput';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {stateCleanup, blurFields, updateFields} from '../../redux/Login/action';
 import {passwordRegex2} from '../../constants/phoneRegex';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const LoginRegCompo = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [pass, setPass] = useState('');
   const [login, setLogin] = useState(true);
+  const [doc, setdoc] = useState(false);
   const [reg, setReg] = useState(false);
   const [fileName, setFileName] = useState('');
   const [images, setImage] = useState('');
@@ -95,19 +96,35 @@ const LoginRegCompo = () => {
             keyboardType={'numeric'}
           />
           <LoginInput
-           placeholder={'Enter Password'}
-           placeholderTextColor="#c4c4c4"
-           editable={true}
-           style={styles.input}
-           onChangeText={e => setPass(e)}
-           value={pass}
-           keyboardType={'numeric'}
-           visible={true}
-           secureTextEntry={!passwordVisible}
-           visibleStyle={styles.visibleStyle}
-           name={passwordVisible ? 'eye' : 'eyeo'}
-           onPress={() => setPasswordVisible(!passwordVisible)}
+            placeholder={'Enter Password'}
+            placeholderTextColor="#c4c4c4"
+            editable={true}
+            style={styles.input}
+            onChangeText={e => setPass(e)}
+            value={pass}
+            keyboardType={'numeric'}
+            visible={true}
+            secureTextEntry={!passwordVisible}
+            visibleStyle={styles.visibleStyle}
+            name={passwordVisible ? 'eye' : 'eyeo'}
+            onPress={() => setPasswordVisible(!passwordVisible)}
           />
+          <TouchableOpacity style={styles.loginButton} onPress={() => {setdoc(true),setReg(false)}}>
+            <Text style={styles.loginButtonText}>Continue</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bottomSignUp}
+            onPress={() => {
+              setReg(false), setLogin(true), setPass('');
+            }}>
+            <Text style={styles.bottomSignUpText}>
+              Already Have an account ? Login
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+      {doc ? (
+        <>
           <TouchableOpacity
             style={styles.uploadDocumentButton}
             onPress={() => launchLibrary()}>
@@ -120,19 +137,10 @@ const LoginRegCompo = () => {
               {fileName === '' ? 'Upload Id Proof' : fileName}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity style={styles.loginButton} onPress={() => {navigation.navigate('FeedStack')}}>
             <Text style={styles.loginButtonText}>Sign Up</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.bottomSignUp}
-            onPress={() => {
-              setReg(false), setLogin(true),setPass('');
-            }}>
-            <Text style={styles.bottomSignUpText}>
-              Already Have an account ? Login
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </>
       ) : null}
       {login ? (
         <View style={styles.loginView}>
@@ -159,16 +167,22 @@ const LoginRegCompo = () => {
             name={passwordVisible ? 'eye' : 'eyeo'}
             onPress={() => setPasswordVisible(!passwordVisible)}
           />
-          <TouchableOpacity style={styles.forgotPassword} onPress={()=>{navigation.navigate('forgotPass')}}>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => {
+              navigation.navigate('forgotPass');
+            }}>
             <Text style={styles.forgotPasswordText}>Forget Password?</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('FeedStack')}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('FeedStack')}>
             <Text style={styles.loginButtonText}>Log In</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.bottomSignUp}
             onPress={() => {
-              setReg(true), setLogin(false),setPass('');
+              setReg(true), setLogin(false), setPass('');
             }}>
             <Text style={styles.bottomSignUpText}>New user sign up</Text>
           </TouchableOpacity>
