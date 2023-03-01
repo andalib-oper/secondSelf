@@ -86,6 +86,15 @@ const LoginRegCompo = () => {
             keyboardType={'default'}
           />
           <LoginInput
+            placeholder={'Enter Phone Number'}
+            placeholderTextColor="#c4c4c4"
+            editable={true}
+            style={styles.input}
+            onChangeText={() => console.log('first')}
+            value={''}
+            keyboardType={'numeric'}
+          />
+          <LoginInput
            placeholder={'Enter Password'}
            placeholderTextColor="#c4c4c4"
            editable={true}
@@ -108,7 +117,7 @@ const LoginRegCompo = () => {
                   ? [styles.uploadDocument]
                   : [styles.uploadDocument, {color: '#fff'}]
               }>
-              {fileName === '' ? 'Upload Document' : fileName}
+              {fileName === '' ? 'Upload Id Proof' : fileName}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.loginButton}>

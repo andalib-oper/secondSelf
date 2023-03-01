@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Activities = () => {
+const Ongoing = () => {
   return (
     <View>
-      <Text>Activities</Text>
+      <Text>Ongoing</Text>
     </View>
   )
 }
 
-export default Activities
+export default Ongoing
 
 const styles = StyleSheet.create({})

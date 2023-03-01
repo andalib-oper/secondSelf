@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Image,StyleSheet,TouchableOpacity } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Activities from '../src/mainTabs/Activities';
+import Activities from '../src/mainTabs/Activities/Activities';
 import Feather from 'react-native-vector-icons/Feather'
 import Chat from '../src/mainTabs/Chat';
 import Profile from '../src/mainTabs/Profile';
@@ -14,17 +14,19 @@ function MainNavigation() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarHideOnKeyboard:true,
         headerShown: false,
-        tabBarActiveTintColor: '#000',
+        tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: 'grey',
+        tabBarStyle: {
+          backgroundColor: '#000',
+        },
         tabBarLabelStyle: {
           fontSize: 12,
-          height: 20,
           fontWeight: '500',
         },
         tabBarItemStyle: {
-          padding: 1,
-          marginTop:3
+          backgroundColor: '#000'
         },
       }}>
       <Tab.Screen
