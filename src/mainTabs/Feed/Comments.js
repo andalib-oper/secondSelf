@@ -121,23 +121,26 @@ const Comments = () => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {comment.map(item => {
+        {/* {comment.map(item => {
           return (
-            <>
+            <> */}
               <CommentCompo
-                send={authState.userId}
+                send={1}
                 pic={{
                   uri:
-                    item?.users.profilePicture == ''
-                      ? 'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
-                      : item?.users.profilePicture,
+                    // item?.users.profilePicture == ''
+                    //   ?
+                       'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
+                      // : item?.users.profilePicture,
                 }}
-                username={item.users.name}
-                message={item.comment}
+                // username={item.users.name}
+                username={'Andalib'}
+                // message={item.comment}
+                message='Hello brother'
               />
-            </>
+            {/* </>
           );
-        })}
+        })} */}
       </ScrollView>
       <View style={styles.inputView}>
         <TextInput
@@ -148,6 +151,9 @@ const Comments = () => {
           onChangeText={e => typingHandler(e)}
           // onKeyPress={sendMessage}
         />
+        <TouchableOpacity style={styles.postButton}>
+          <Text style={styles.postButtonText}>Post</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -166,7 +172,7 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     borderRadius: 20,
-    width: windowWidth / 1.6,
+    width: windowWidth / 1.33,
     marginLeft: '3%',
     marginBottom: '3%',
     marginTop: '3%',
@@ -177,12 +183,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     alignSelf: 'center',
+    // justifyContent: 'center',
     width: windowWidth / 1.1,
-    borderWidth: 1,
+    // borderWidth: 1,
     bottom: 10,
     borderRadius: 10,
-    borderColor: '#5d6afe',
+    // borderColor: '#5d6afe',
     backgroundColor: '#EDF0FE',
     position: 'absolute',
   },
+  postButton:{
+    alignSelf: 'center'
+  },
+  postButtonText:{
+    fontSize:14,
+    color:'blue',
+    fontWeight:'600'
+  }
 });

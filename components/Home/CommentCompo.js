@@ -17,7 +17,7 @@ const CommentCompo = (props) => {
   const navigation = useNavigation()
   return (
     <View>
-          {props.send === authId ? (
+          {props.send == authId ? (
             <>
               <View style={{flexDirection: 'row', marginBottom: '1%'}}>
                 <View style={{flexDirection: 'column'}}>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 100 / 2,
   },
   messageRight: {
-    backgroundColor: '#5d6afe',
+    backgroundColor: '#fff',
     marginLeft: '20%',
     marginTop: '5%',
     height: 'auto',
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   senderUsername: {
     textAlign: 'left',
     fontSize: 14,
-    color: '#fff',
+    color: '#000',
     marginTop: '2%',
     marginLeft: '5%',
     // margin: '5%'
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '90%',
     fontSize: 14,
-    color: '#fff',
+    color: '#000',
     marginTop: '2%',
     marginBottom: '2%',
     marginLeft: '5%',

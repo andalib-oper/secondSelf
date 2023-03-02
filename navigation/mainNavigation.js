@@ -7,6 +7,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import Chat from '../src/mainTabs/Chat';
 import Profile from '../src/mainTabs/Profile';
 import FeedStackNavigation from './FeedStackNavigation';
+import ActivityStackNavigation from './ActivityStackNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,16 +31,18 @@ function MainNavigation() {
         },
       }}>
       <Tab.Screen
-        name="Feeds"
+        name="FeedsStack"
         component={FeedStackNavigation}
         options={{
+          tabBarLabel: 'Feeds',
           tabBarIcon: ({color}) => (
             <MaterialIcons name="dynamic-feed" color={color} size={24}/>
           ),
         }}
       />
-      <Tab.Screen name="Activities" component={Activities} 
+      <Tab.Screen name="ActivitiesStack" component={ActivityStackNavigation} 
         options={{
+          tabBarLabel: 'Activity',
           tabBarIcon: ({color}) => (
             <Feather name="activity" color={color} size={24} />
           ),

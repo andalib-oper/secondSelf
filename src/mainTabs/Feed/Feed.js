@@ -39,7 +39,7 @@ const Feed = () => {
         filterName="plussquareo"
         filterSize={26}
         filterColor={'#fff'}
-        filterNavigation={() => {navigation.navigate('CameraOptions')}}
+        filterNavigation={() => {navigation.navigate('CreateActivity')}}
       />
       <ScrollView>
       <View style={styles.storiesContainer}>
@@ -53,10 +53,7 @@ const Feed = () => {
                     navigation.navigate('Stories', {stories: i.storiesImage})
                   }>
                   <ImageBackground
-                    style={
-                      i.seen
-                        ? [styles.storyButton, {borderColor: 'grey'}]
-                        : [styles.storyButton]
+                    style={[styles.storyButton]
                     }>
                     <Image
                       source={{uri: i.storiesImage[0]}}

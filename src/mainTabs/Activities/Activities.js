@@ -8,6 +8,7 @@ import Completed from './Completed';
 const Activities = () => {
   const [index, setIndex] = useState(0);
   const status = ['Active', 'Upcoming', 'Completed'];
+  let upcoming = true
   return (
     <View style={styles.container}>
         <StackHeader
@@ -48,7 +49,7 @@ const Activities = () => {
       <View style={styles.tabContainer}>
         <ScrollView>
         {index === 0 && <Ongoing />}
-        {index === 1 && <Upcoming />}
+        {index === 1 && <Upcoming join={upcoming} />}
         {index === 2 && <Completed />}
         </ScrollView>
       </View>

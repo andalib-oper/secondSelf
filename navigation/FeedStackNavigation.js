@@ -6,10 +6,11 @@ import Feed from '../src/mainTabs/Feed/Feed';
 import Stories from '../src/mainTabs/Feed/Stories';
 import Comments from '../src/mainTabs/Feed/Comments';
 import CameraOptions from '../src/mainTabs/Feed/CameraOptions';
+import CreateActivity from '../src/mainTabs/Activities/CreateActivity';
 
 const Stack = createStackNavigator();
 
-const tabHiddenRoutes = ["Stories","Comments","CameraOptions"];
+const tabHiddenRoutes = ["Stories","Comments","CreateActivity"];
 
 const FeedStackNavigation = ({navigation,route}) => {
   useLayoutEffect(() => {
@@ -33,11 +34,11 @@ const FeedStackNavigation = ({navigation,route}) => {
         options={{headerShown: false}}
       />
        <Stack.Screen
-        name="CameraOptions"
-        component={CameraOptions}
+        name="CreateActivity"
+        component={CreateActivity}
         options={{
           headerShown: true,
-          headerTitle: 'Upload Stories',
+          headerTitle: 'Create Activity',
           headerStyle:{
             backgroundColor:'#000'
           },
