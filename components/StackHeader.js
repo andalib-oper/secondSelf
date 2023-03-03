@@ -23,13 +23,13 @@ const StackHeader = prop => {
   return (
     <View>
       <View style={styles.header}>
-        <View>
+        <View style={{alignSelf:'center', marginLeft:'2%'}}>
           {prop.headerImage ? (
             <>
               {prop.headerIcon ? (
-                <View style={styles.icon}>
+                <TouchableOpacity style={styles.icon} onPress={()=>navigation.goBack()}>
                     <AntDesign name="arrowleft" color={'#fff'} size={24} />
-                </View>
+                </TouchableOpacity>
               ) : (
                 <Image
                   source={require('../assets/Images/png/logo-white.png')}
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   nameView: {
     alignSelf: 'center',
     marginLeft: '3%',
-    width: '73%',
+    width: '70%',
   },
   name: {
     fontSize: 20,

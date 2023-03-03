@@ -2,12 +2,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Image,StyleSheet,TouchableOpacity } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Activities from '../src/mainTabs/Activities/Activities';
 import Feather from 'react-native-vector-icons/Feather'
-import Chat from '../src/mainTabs/Chat';
-import Profile from '../src/mainTabs/Profile';
 import FeedStackNavigation from './FeedStackNavigation';
 import ActivityStackNavigation from './ActivityStackNavigation';
+import ChatStackNavigation from './ChatStackNavigation';
+import ProfileStackNavigation from './ProfileStackNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,15 +47,17 @@ function MainNavigation() {
           ),
         }}
       />
-        <Tab.Screen name="Chat" component={Chat} 
+        <Tab.Screen name="ChatStack" component={ChatStackNavigation} 
         options={{
+          tabBarLabel: 'Chat',
           tabBarIcon: ({color}) => (
             <AntDesign name="wechat" color={color} size={24} />
           ),
         }}
       />
-        <Tab.Screen name="Profile" component={Profile} 
+        <Tab.Screen name="ProfileStack" component={ProfileStackNavigation} 
         options={{
+          tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (
             <AntDesign name="profile" color={color} size={22} />
           ),
