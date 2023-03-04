@@ -31,7 +31,7 @@ const ProfileStackNavigation = ({navigation,route}) => {
         name="EditProfile"
         component={EditProfile}
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTitle: 'Edit Profile',
           headerStyle:{
             backgroundColor:'#000'

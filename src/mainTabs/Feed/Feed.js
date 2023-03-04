@@ -8,28 +8,76 @@ import {
   ImageBackground,
   Dimensions,
   FlatList,
+  PermissionsAndroid
 } from 'react-native';
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import ImagePicker from 'react-native-image-crop-picker';
+import Geolocation from 'react-native-geolocation-service';
+import LocationIQ from 'react-native-locationiq';
 import StoriesData from '../../../assets/MockData/StoriesData';
 import StackHeader from '../../../components/StackHeader';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
 
+const requestLocationPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Geolocation Permission',
+        message: 'Can we access your location?',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    console.log('granted', granted);
+    if (granted === 'granted') {
+      console.log('You can use Geolocation');
+      return true;
+    } else {
+      console.log('You cannot use Geolocation');
+      return false;
+    }
+  } catch (err) {
+    return false;
+  }
+};
+
 const Feed = () => {
   const navigation = useNavigation();
-  const [fileName, setFileName] = useState('');
-  const [images, setImage] = useState('');
-  const launchLibrary = () => {
-    ImagePicker.openPicker({
-      multiple: false,
-    }).then(image => {
-      console.log('img', image?.path?.slice(-23));
-      setFileName(image?.path?.slice(-23));
-      setImage(image);
+  const [lat, setLat] = useState('');
+  const [long, setLong] = useState('');
+  const [Location, setLocation] = useState('');
+
+  LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
+  const getCurrentPosition = () => {
+    const result = requestLocationPermission();
+    result.then(res => {
+      console.log('res is:', res);
+      if (res) {
+        Geolocation.getCurrentPosition(
+          pos => {
+            setLat(JSON.stringify(pos.coords.latitude));
+            setLong(JSON.stringify(pos.coords.longitude));
+          },
+          error =>
+            console.log('GetCurrentPosition Error', JSON.stringify(error)),
+          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        );
+      }
     });
   };
+  useEffect(() => {
+    getCurrentPosition()
+  }, []);
+  LocationIQ.reverse(lat, long)
+    .then(json => {
+      var address = json.address.city;
+      setLocation(address);
+    })
+    .catch(error => console.warn(error));
+    console.log("lpl", lat,long,Location)
   return (
     <View style={styles.container}>
       <StackHeader
