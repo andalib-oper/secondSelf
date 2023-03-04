@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   },
   image:{
-    height:windowHeight/2.5,
+    height:windowHeight/2.7,
     width:windowWidth/1.5,
     alignSelf: 'center'
   }

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   image: {
-    height: windowHeight / 3.2,
+    height: windowHeight / 3.6,
     width: windowWidth / 2,
     alignSelf: 'center',
     marginTop: '10%',

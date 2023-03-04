@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "cc": "rimraf node_modules/.cache/babel-loader/*,",
+    "bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
     "android": "npm run cc && react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
