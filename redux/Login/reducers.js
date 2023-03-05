@@ -8,12 +8,12 @@ import {UPDATE_FIELDS,
       password: '',
     },
     inputValidity: {
-      email: true,
-      password: true,
+      email: false,
+      password: false,
     },
     isTouched: {
-      email: true,
-      password: true,
+      email: false,
+      password: false,
     },
     // finalFormState: false
   };
@@ -42,7 +42,7 @@ import {UPDATE_FIELDS,
       }
   
       case STATE_CLEANUP: {
-        console.log("Cleaning state");
+        // console.log("Cleaning state");
         return initialState;
       }
       default:

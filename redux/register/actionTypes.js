@@ -1,3 +1,3 @@
 export const UPDATE_FIELDS_REG = 'UPDATE_FIELDS';
 export const BLUR_FIELDS_REG = 'BLUR_FIELDS';
-export const STATE_CLEANUP = 'STATE_CLEANUP';
+export const STATE_CLEANUP_REG = 'STATE_CLEANUP';

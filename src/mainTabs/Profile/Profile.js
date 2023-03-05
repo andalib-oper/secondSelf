@@ -1,13 +1,16 @@
-import {StyleSheet, Text, View, Dimensions, Image,ImageBackground,ScrollView,FlatList} from 'react-native';
+import {StyleSheet, Text, View, Dimensions, Image,ImageBackground,ScrollView,FlatList,TouchableOpacity} from 'react-native';
 import React from 'react';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
 import StackHeader from '../../../components/StackHeader';
 import { useNavigation } from '@react-navigation/native';
 import ProfileInput from '../../../components/Profile/ProfileInput';
+import { useDispatch } from 'react-redux';
+import { logUserOut } from '../../../redux/auth/action';
 
 const Profile = () => {
   const navigation=useNavigation()
+  const dispatch = useDispatch()
   return (
     <View style={styles.container}>
       <StackHeader headerName="Profile" rightIcon={false} />
@@ -76,6 +79,14 @@ const Profile = () => {
         value={'Female'}
         />
       </View>
+{/* LOGOUT BUTTON */}
+      <TouchableOpacity
+          onPress={() => {
+           dispatch(logUserOut())
+          }}
+          style={styles.createActivityButton}>
+          <Text style={styles.createActivityText}>Logout</Text>
+        </TouchableOpacity>
       {/* Activities section */}
       <View style={styles.profileView}>
         <Text style={styles.profileHeader}>Your Activies</Text>
@@ -172,5 +183,21 @@ const styles = StyleSheet.create({
     padding: 5,
     alignSelf: 'center',
     width: windowWidth / 1,
+  },
+  createActivityButton: {
+    alignSelf: 'center',
+    width: windowWidth / 1.5,
+    padding: 5,
+    backgroundColor: '#fff',
+    marginTop: '10%',
+    marginBottom:'5%',
+    borderRadius: 10,
+  },
+  createActivityText: {
+    fontSize: 16,
+    padding: 10,
+    alignSelf: 'center',
+    color: '#000',
+    fontWeight: 'bold',
   },
 });

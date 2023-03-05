@@ -4,190 +4,244 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import LoginInput from './LoginInput';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import ImagePicker from 'react-native-image-crop-picker';
 import {useDispatch, useSelector} from 'react-redux';
+import {logUserIn, uploadDoc} from '../../redux/auth/action';
+import { regUserUp } from '../../redux/auth/action';
 import {stateCleanup, blurFields, updateFields} from '../../redux/Login/action';
 import {passwordRegex2} from '../../constants/phoneRegex';
 import {useNavigation} from '@react-navigation/native';
+import { emailRegex } from '../../constants/phoneRegex';
+import { blurFieldsReg, stateCleanupReg,updateFieldsReg } from '../../redux/register/actions';
 
-const LoginRegCompo = () => {
+const LoginRegCompo = ({data}) => {
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const authState = useSelector((state)=>state.authState)
   const [pass, setPass] = useState('');
-  const [login, setLogin] = useState(true);
-  const [doc, setdoc] = useState(false);
+  const [login, setLogin] = useState(data);
   const [reg, setReg] = useState(false);
-  const [fileName, setFileName] = useState('');
-  const [images, setImage] = useState('');
   const loginFormState = useSelector(state => state.loginFormState);
   const dispatch = useDispatch();
-  const authState = useSelector(state => state.authState);
+  const registerFormState = useSelector(state=> state.registerFormState)
+
+  // register state work here
   useEffect(() => {
-    dispatch(stateCleanup());
+    dispatch(stateCleanupReg());
   }, [dispatch]);
-  const onSubmitHandler = () => {
+  const onSubmitHandlerReg = () => {
     if (
-      loginFormState.inputValidity.email &&
-      loginFormState.inputValidity.password
+      registerFormState.inputValidity.email ,
+      registerFormState.inputValidity.name,
+      registerFormState.inputValidity.phoneNo,
+      registerFormState.inputValidity.password
     ) {
       console.log('All fields validated');
-      // dispatch(logUserIn(loginFormState.inputValues));
-    } else {
-      Alert.alert('Please Input Fields Correctly');
+      dispatch(regUserUp(registerFormState.inputValues))
+      navigation.navigate('FeedStack')
+    }
+    else {
+      Alert.alert("Please Input Fields Correctly")
     }
   };
-
-  const blurListener = fieldId => {
-    dispatch(blurFields(fieldId));
+  const blurListenerReg = (fieldId) => {
+    dispatch(blurFieldsReg(fieldId));
   };
 
-  const checkValidity = (val, fieldId) => {
+  const checkValidityReg = (val, fieldId) => {
     let isValid = true;
-    if (fieldId === 'email') {
+    if (fieldId === 'email' && !emailRegex.test(String(val).toLowerCase())) {
+      // && !emailRegex.test(String(val).toLowerCase())
       isValid = false;
     }
 
     if (fieldId === 'password' && !passwordRegex2.test(String(val))) {
       isValid = false;
     }
-    dispatch(updateFields(val, fieldId, isValid));
+    dispatch(updateFieldsReg(val, fieldId, isValid));
   };
-  const launchLibrary = () => {
-    ImagePicker.openPicker({
-      multiple: false,
-    }).then(image => {
-      console.log('img', image?.path?.slice(-23));
-      setFileName(image?.path?.slice(-23));
-      setImage(image);
-    });
+  // login state work here
+  useEffect(() => {
+    dispatch(stateCleanup());
+  }, [dispatch]);
+  const onSubmitHandler = async() => {
+    if (
+      loginFormState.inputValidity.email &&
+      loginFormState.inputValidity.password
+    ) {
+      console.log('All fields validated');
+      await dispatch(logUserIn(loginFormState.inputValues));
+      navigation.navigate('FeedStack')
+    } else {
+      Alert.alert('Please Input Fields Correctly');
+    }
+  };
+  const blurListener = fieldId => {
+    dispatch(blurFields(fieldId));
+  };
+  
+  const checkValidity = (val, fieldId) => {
+    let isValid = true;
+    if (fieldId === 'email') {
+      isValid = true;
+    }
+    
+    if (fieldId === 'password' && !passwordRegex2.test(String(val))) {
+      isValid = true;
+    }
+    dispatch(updateFields(val, fieldId, isValid));
   };
   return (
     <View style={styles.container}>
-      {reg ? (
-        <View style={styles.regView}>
-          <LoginInput
-            placeholder={'Enter Name'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={() => console.log('first')}
-            value={''}
-            keyboardType={'default'}
+        <OrientationLoadingOverlay
+          visible={authState.loading}
+          color="white"
+          indicatorSize="large"
+          messageFontSize={24}
           />
-          <LoginInput
-            placeholder={'Enter Email'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={() => console.log('first')}
-            value={''}
-            keyboardType={'default'}
-          />
-          <LoginInput
-            placeholder={'Enter Phone Number'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={() => console.log('first')}
-            value={''}
-            keyboardType={'numeric'}
-          />
-          <LoginInput
-            placeholder={'Enter Password'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={e => setPass(e)}
-            value={pass}
-            keyboardType={'numeric'}
-            visible={true}
-            secureTextEntry={!passwordVisible}
-            visibleStyle={styles.visibleStyle}
-            name={passwordVisible ? 'eye' : 'eyeo'}
-            onPress={() => setPasswordVisible(!passwordVisible)}
-          />
-          <TouchableOpacity style={styles.loginButton} onPress={() => {setdoc(true),setReg(false)}}>
-            <Text style={styles.loginButtonText}>Continue</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.bottomSignUp}
-            onPress={() => {
-              setReg(false), setLogin(true), setPass('');
-            }}>
-            <Text style={styles.bottomSignUpText}>
-              Already Have an account ? Login
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-      {doc ? (
-        <>
-          <TouchableOpacity
-            style={styles.uploadDocumentButton}
-            onPress={() => launchLibrary()}>
-            <Text
-              style={
-                fileName === ''
-                  ? [styles.uploadDocument]
-                  : [styles.uploadDocument, {color: '#fff'}]
-              }>
-              {fileName === '' ? 'Upload Id Proof' : fileName}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.loginButton} onPress={() => {navigation.navigate('FeedStack')}}>
-            <Text style={styles.loginButtonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </>
-      ) : null}
-      {login ? (
-        <View style={styles.loginView}>
-          <LoginInput
-            placeholder={'Enter Email'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={() => console.log('first')}
-            value={''}
-            keyboardType={'default'}
-          />
-          <LoginInput
-            placeholder={'Enter Password'}
-            placeholderTextColor="#c4c4c4"
-            editable={true}
-            style={styles.input}
-            onChangeText={e => setPass(e)}
-            value={pass}
-            keyboardType={'numeric'}
-            visible={true}
-            secureTextEntry={!passwordVisible}
-            visibleStyle={styles.visibleStyle}
-            name={passwordVisible ? 'eye' : 'eyeo'}
-            onPress={() => setPasswordVisible(!passwordVisible)}
-          />
-          <TouchableOpacity
-            style={styles.forgotPassword}
-            onPress={() => {
-              navigation.navigate('forgotPass');
-            }}>
-            <Text style={styles.forgotPasswordText}>Forget Password?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => navigation.navigate('FeedStack')}>
-            <Text style={styles.loginButtonText}>Log In</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.bottomSignUp}
-            onPress={() => {
-              setReg(true), setLogin(false), setPass('');
-            }}>
-            <Text style={styles.bottomSignUpText}>New user sign up</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+    {reg ? (
+      <View style={styles.regView}>
+        <LoginInput
+          placeholder={'Enter Name'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          keyboardType={'default'}
+          style={styles.input}
+          value={registerFormState.inputValues.name}
+          inputIsValid={registerFormState.inputValidity.name}
+          inputIsTouched={registerFormState.isTouched.name}
+          onChangeText={val => checkValidityReg(val, 'name')}
+          onBlur={() => {
+            blurListenerReg('name');
+          }}
+        />
+        <LoginInput
+          placeholder={'Enter Email'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          keyboardType={'default'}
+          style={styles.input}
+          value={registerFormState.inputValues.email}
+          inputIsValid={registerFormState.inputValidity.email}
+          inputIsTouched={registerFormState.isTouched.email}
+          onChangeText={val => checkValidityReg(val, 'email')}
+          onBlur={() => {
+            blurListenerReg('email');
+          }}
+        />
+        <LoginInput
+          placeholder={'Enter Phone Number'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          style={styles.input}
+          keyboardType={'numeric'}
+          value={registerFormState.inputValues.phoneNo}
+          inputIsValid={registerFormState.inputValidity.phoneNo}
+          inputIsTouched={registerFormState.isTouched.phoneNo}
+          onChangeText={val => checkValidityReg(val, 'phoneNo')}
+          onBlur={() => {
+            blurListenerReg('phoneNo');
+          }}
+        />
+        <LoginInput
+          placeholder={'Enter Password'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          style={styles.input}
+          keyboardType={'numeric'}
+          visible={true}
+          secureTextEntry={!passwordVisible}
+          visibleStyle={styles.visibleStyle}
+          name={passwordVisible ? 'eye' : 'eyeo'}
+          onPress={() => setPasswordVisible(!passwordVisible)}
+          value={registerFormState.inputValues.password}
+          inputIsValid={registerFormState.inputValidity.password}
+          inputIsTouched={registerFormState.isTouched.password}
+          onChangeText={val => checkValidityReg(val, 'password')}
+          onBlur={() => {
+            blurListenerReg('password');
+          }}
+        />
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => {
+            setReg(false),onSubmitHandlerReg()
+          }}>
+          <Text style={styles.loginButtonText}>Continue</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.bottomSignUp}
+          onPress={() => {
+            setReg(false), setLogin(true), setPass('');
+          }}>
+          <Text style={styles.bottomSignUpText}>
+            Already Have an account ? Login
+          </Text>
+        </TouchableOpacity>
+      </View>
+    ) : null}
+    {login ? (
+      <View style={styles.loginView}>
+        <LoginInput
+          placeholder={'Enter Email'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          keyboardType={'default'}
+          value={loginFormState.inputValues.email}
+          inputIsValid={loginFormState.inputValidity.email}
+          inputIsTouched={loginFormState.isTouched.email}
+          style={styles.input}
+          onChangeText={val => checkValidity(val, 'email')}
+          onBlur={() => {
+            blurListener('email');
+          }}
+        />
+        <LoginInput
+          placeholder={'Enter Password'}
+          placeholderTextColor="#c4c4c4"
+          editable={true}
+          style={styles.input}
+          keyboardType={'numeric'}
+          visible={true}
+          secureTextEntry={!passwordVisible}
+          visibleStyle={styles.visibleStyle}
+          name={passwordVisible ? 'eye' : 'eyeo'}
+          onPress={() => setPasswordVisible(!passwordVisible)}
+          value={loginFormState.inputValues.password}
+          inputIsValid={loginFormState.inputValidity.password}
+          inputIsTouched={loginFormState.isTouched.password}
+          onChangeText={val => checkValidity(val, 'password')}
+          onBlur={() => {
+            blurListener('password');
+          }}
+        />
+        <TouchableOpacity
+          style={styles.forgotPassword}
+          onPress={() => {
+            navigation.navigate('forgotPass');
+          }}>
+          <Text style={styles.forgotPasswordText}>Forget Password?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => onSubmitHandler()}>
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.bottomSignUp}
+          onPress={() => {
+            setReg(true), setLogin(false), setPass('');
+          }}>
+          <Text style={styles.bottomSignUpText}>New user sign up</Text>
+        </TouchableOpacity>
+      </View>
+    ) : null}
     </View>
   );
 };

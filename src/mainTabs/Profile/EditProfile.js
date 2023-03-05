@@ -56,17 +56,24 @@ const EditProfile = () => {
   const [profilePicImages, setProfilePicImages] = useState('');
   const [coverPic, setCoverPic] = useState('');
   const [coverPicImages, setcoverPicImage] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [images, setImage] = useState('');
   LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
   const launchLibrary = profile => {
     ImagePicker.openPicker({
       multiple: false,
     }).then(image => {
-      if (profile) {
+      if (profile==true) {
         setProfilePic(image.path);
         setProfilePicImages(image);
-      } else {
+      } 
+      else if(profile==false){
         setCoverPic(image.path);
         setcoverPicImage(image);
+      }else{
+        console.log('img', image?.path?.slice(-20));
+      setFileName(image?.path?.slice(-20));
+      setImage(image);
       }
     });
   };
@@ -93,8 +100,6 @@ const EditProfile = () => {
       setLocation(address);
     })
     .catch(error => console.warn(error));
-
-  console.log('pp', profilePic);
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -247,6 +252,18 @@ const EditProfile = () => {
             keyboardType={'default'}
           />
         </View>
+        {/* upload document section */}
+        <View style={styles.profileSectionRest}>
+          <Text style={styles.headerText}>Upload Id Proof</Text>
+          <TouchableOpacity
+            style={styles.locationInput}
+            onPress={() => launchLibrary(null)}>
+            <Text style={styles.locationText}>
+              {fileName === '' ? 'Upload Id Proof' : fileName}
+              {/* doc */}
+            </Text>
+          </TouchableOpacity>
+        </View>
         {/* Update Button  */}
         <TouchableOpacity
           onPress={() => {
@@ -363,7 +380,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
     marginTop: '20%',
-    marginBottom:'5%',
+    marginBottom: '5%',
     borderRadius: 10,
   },
   createActivityText: {

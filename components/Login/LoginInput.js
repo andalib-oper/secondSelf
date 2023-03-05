@@ -46,4 +46,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     margin: 10,
   },
+  error:{
+    color:'red',
+    alignSelf:'center',
+    margin:3,
+    fontSize:14,
+    fontWeight:'500'
+  }
 });

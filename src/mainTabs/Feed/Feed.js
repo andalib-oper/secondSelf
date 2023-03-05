@@ -18,6 +18,7 @@ import StoriesData from '../../../assets/MockData/StoriesData';
 import StackHeader from '../../../components/StackHeader';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
+import { useSelector } from 'react-redux';
 
 const requestLocationPermission = async () => {
   try {
@@ -45,11 +46,12 @@ const requestLocationPermission = async () => {
 };
 
 const Feed = () => {
+  const authState = useSelector((state)=>state.authState)
   const navigation = useNavigation();
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
   const [Location, setLocation] = useState('');
-
+// console.log("stateauth", authState.id)
   LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
   const getCurrentPosition = () => {
     const result = requestLocationPermission();
@@ -76,8 +78,7 @@ const Feed = () => {
       var address = json.address.city;
       setLocation(address);
     })
-    .catch(error => console.warn(error));
-    console.log("lpl", lat,long,Location)
+    .catch(error => console.log(error));
   return (
     <View style={styles.container}>
       <StackHeader

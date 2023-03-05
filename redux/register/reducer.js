@@ -1,29 +1,25 @@
-import {UPDATE_FIELDS_REG, BLUR_FIELDS_REG, STATE_CLEANUP} from './actionTypes';
+import {UPDATE_FIELDS_REG, BLUR_FIELDS_REG, STATE_CLEANUP_REG} from './actionTypes';
 
 const initialState = {
   inputValues: {
-    email: 'andalib5@gmail.com',
-    firstName: 'Aliza',
-    lastName: 'Quraishi',
-    password: '12345678',
-    cpassword: '',
+    email: '',
+    name: '',
+    phoneNo: '',
+    password: '',
   },
   inputValidity: {
-    email: true,
-    firstName: true,
-    lastName: true,
-    password: true,
-    cpassword: true,
+    email: false,
+    name: false,
+    phoneNo: false,
+    password: false,
   },
   isTouched: {
-    email: true,
-    firstName: true,
-    lastName: true,
-    password: true,
-    cpassword: true,
-    // tnc: true,
+    email: false,
+    name: false,
+    phoeNo: false,
+    password: false,
   },
-  finalFormState: true,
+  finalFormState: false,
 };
 
 const regReducer = (state = initialState, action) => {
@@ -56,8 +52,8 @@ const regReducer = (state = initialState, action) => {
       return {...state, isTouched: newInputIsTouched};
     }
 
-    case STATE_CLEANUP: {
-      console.log('Cleaning state');
+    case STATE_CLEANUP_REG: {
+      // console.log('Cleaning state reg');
       return initialState;
     }
 
