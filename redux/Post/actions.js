@@ -1,4 +1,4 @@
-import {GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, REQ_POST,LIKE,DISLIKE, COMMENT } from "./actionTypes";
+import {GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, REQ_POST,LIKE,DISLIKE, COMMENT, GET_ALL_POST_BY_USERID } from "./actionTypes";
 import {BASE_URL} from '@env'
 import axios from 'axios';
 
@@ -26,6 +26,11 @@ export const like = (data) => ({
     data
   });
 
+  export const postUserId = (data) => ({
+    type: GET_ALL_POST_BY_USERID,
+    data
+  });
+
   export const reqFailure = error => ({
     type: REQ_FAILURE_POST,
     error: error,
@@ -43,6 +48,24 @@ export const like = (data) => ({
             }
         } catch (err) {
             console.log("request failed stories")
+            console.log(err.message)
+            dispatch(reqFailure(err.message))
+        }
+    };
+}
+
+export const getPostByUserId = (authId) => {
+    return async (dispatch) => {
+        dispatch(reqPost())
+        try {
+            const response = await axios.get(
+                BASE_URL+`/api/post/user/${authId}`
+            );
+            if (response) {
+                dispatch(postUserId(response.data))
+            }
+        } catch (err) {
+            console.log("request failed user post")
             console.log(err.message)
             dispatch(reqFailure(err.message))
         }

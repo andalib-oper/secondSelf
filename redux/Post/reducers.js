@@ -1,4 +1,4 @@
-const {LIKE,DISLIKE, GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, COMMENT, REQ_POST} = require('./actionTypes');
+const {LIKE,DISLIKE, GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, COMMENT, REQ_POST, GET_ALL_POST_BY_USERID} = require('./actionTypes');
 
 const initialState = {
   postCity:[],
@@ -6,7 +6,8 @@ const initialState = {
   dislikePost:[],
   comment:[],
   loading:false,
-  error:''
+  error:'',
+  postUserId:[],
 };
 
 const PostReducer = (state = initialState, action) => {
@@ -21,6 +22,13 @@ const PostReducer = (state = initialState, action) => {
       return {
         ...state,
         postCity: action.data,
+        loading: false,
+      };
+    }
+    case GET_ALL_POST_BY_USERID: {
+      return {
+        ...state,
+        postUserId: action.data,
         loading: false,
       };
     }

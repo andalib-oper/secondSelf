@@ -6,6 +6,7 @@ import regReducer from './register/reducer';
 import FeedReducer from './Feeds/reducer';
 import PostReducer from './Post/reducers';
 import ActivityReducer from './Activity/reducers';
+import ProfileReducer from './Profile/reducers';
 
 const rootReducer = combineReducers({
   authState: authReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   registerFormState: regReducer,
   feedState: FeedReducer,
   postState:PostReducer,
-  activityState:ActivityReducer
+  activityState:ActivityReducer,
+  profileState:ProfileReducer
 });
 
 export default rootReducer;
