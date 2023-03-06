@@ -13,63 +13,65 @@ import {SliderBox} from 'react-native-image-slider-box';
 import {useDispatch, useSelector} from 'react-redux';
 import {like} from '../../redux/Feeds/actions';
 import { useNavigation } from '@react-navigation/native';
+import { postDislike, postLike } from '../../redux/Post/actions';
 
-const FeedsFlatlist = ({data}) => {
+const FeedsFlatlist = ({data,city}) => {
   const navigation=useNavigation()
+  const authState = useSelector((state)=>state.authState)
+  const postState=useSelector((state)=>state.postState)
   const dispatch = useDispatch();
   const feedState = useSelector(state => state.feedState);
-  const likeFunc = id => {
-    if (feedState.like.includes(id)) {
-      dispatch(like(feedState.like.filter(val => val !== id)));
-    } else {
-      dispatch(like([...new Set([...feedState.like, id])]));
+  const likeFunc = (postId,authId) => {
+    if(findId.includes(authState.id)){
+      dispatch(postDislike(postId,authId,city))
+    } else{
+      dispatch(postLike(postId,authId,city))
     }
   };
+  const findId = postState.postCity[0]?.likes.map(i=>i._id)
   return (
     <View style={styles.container}>
       <View style={styles.profileDetailsView}>
-        <Image style={styles.profileImage} source={{uri: data?.profileImg}} />
-        <Text style={styles.profileName}>{data?.name}</Text>
+        <Image style={styles.profileImage} source={{uri: data?.userId?.profilePicture}} />
+        <View style={{alignSelf:'center'}}>
+        <Text style={styles.profileName}>{data?.userId?.name}</Text>
+        <Text style={styles.profileName}>{data?.city}</Text>
+        </View>
       </View>
       <View>
-        <SliderBox
-          images={data.postImages}
-          sliderBoxHeight={200}
-          resizeMode={'cover'}
-          ImageComponentStyle={styles.sliderBoxView}
-          onCurrentImagePressed={index =>
-            console.warn(`image ${index} pressed`)
-          }
+        <Image
+        source={{uri:data?.content}}
+        style={styles.sliderBoxView}
         />
       </View>
       <View style={styles.optionView}>
         <TouchableOpacity
           onPress={() => {
-            likeFunc(data.id);
+            likeFunc(data._id,authState.id);
           }}
           style={styles.likeStyle}>
           <AntDesign
-            name={feedState.like.includes(data.id) ? 'heart' : 'hearto'}
+            name={findId.includes(authState.id) ? 'heart' : 'hearto'}
             size={24}
-            color={feedState.like.includes(data.id) ? 'red' : '#fff'}
+            color={findId.includes(authState.id) ? 'red' : '#fff'}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {navigation.navigate('Comments')}} style={styles.likeStyle}>
+        <TouchableOpacity onPress={() => {navigation.navigate('Comments',{id:data._id})}} style={styles.likeStyle}>
           <FontAwesome name={'comment-o'} size={24} color={'#fff'} />
         </TouchableOpacity>
       </View>
       <View style={styles.likeView}>
         <Text style={styles.likeText}>
-          {data.likes}
+          {data.likes.length}
           {'  '}likes
         </Text>
       </View>
       <View style={styles.bioView}>
         <Text style={styles.bioText}>
-          {data?.name}
+          {data?.userId?.name}
           {'  '}
           <Text style={[styles.bioText, {fontWeight: '400'}]}>
-            {data?.profileBio}
+            {data?.description}
           </Text>
         </Text>
       </View>
@@ -104,13 +106,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#fff',
-    alignSelf: 'center',
-    margin: 10,
+    alignSelf: 'flex-start',
+    paddingHorizontal:10
+    // margin: 10,
   },
   sliderBoxView: {
     width: windowWidth / 1.2,
     height: windowHeight / 3,
-    marginRight: '7%',
+    // marginRight: '7%',
     borderRadius: 15,
     marginTop: 5,
     alignSelf: 'center',

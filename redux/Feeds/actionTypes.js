@@ -1,1 +1,3 @@
-export const LIKE = "LIKE"
+export const REQ_FEEDS = "REQ_FEEDS"
+export const REQ_FAILURE_FEEDS = 'REQ_FAILURE_FEEDS';
+export const GET_ALL_STORIES="GET_ALL_STORIES"

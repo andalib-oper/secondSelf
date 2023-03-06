@@ -44,20 +44,9 @@ const requestLocationPermission = async () => {
 const CreateActivity = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
-  const [lat, setLat] = useState('');
-  const [long, setLong] = useState('');
+  const [openTime, setOpenTime] = useState(false);
+  const [time, setTime] = useState(new Date());
   const [Location, setLocation] = useState('');
-  const onSelect = ({startTime, endTime}) => {
-    setStart(startTime);
-    setEnd(endTime);
-    setVisible(false);
-  };
-  const onClose = () => {
-    setVisible(false);
-  };
   return (
     <View style={styles.container}>
         {/* date view */}
@@ -83,20 +72,22 @@ const CreateActivity = ({navigation}) => {
       {/* time view */}
       <View>
         <Text style={styles.headerText}>Time of Activity</Text>
-        <View style={styles.timeView}>
-        <TouchableOpacity style={styles.timeButton} onPress={()=>setVisible(true)}>
-          <Text style={styles.dateText}>{start?start:'Select Start Time'}</Text>
+        <TouchableOpacity style={styles.dateButton} onPress={()=>setOpenTime(true)}>
+          <Text style={styles.dateText}>{time?time.toLocaleTimeString():'Select date'}</Text>
         </TouchableOpacity>
-        <View style={styles.timeButton}>
-          <Text style={styles.dateText}>{end?end:'Select End Time'}</Text>
-        </View>
-        <TimeRangePicker
-              style={styles.timer}
-              visible={visible}
-              onClose={onClose}
-              onSelect={onSelect}
-            />
-        </View>
+        <DatePicker
+          modal
+          mode='time'
+          open={openTime}
+          date={time}
+          onConfirm={time => {
+            setOpenTime(false);
+            setTime(time);
+          }}
+          onCancel={() => {
+            setOpenTime(false);
+          }}
+        />
       </View>
       {/* location view */}
       <View>

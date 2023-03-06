@@ -15,10 +15,13 @@ import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import LocationIQ from 'react-native-locationiq';
 import StoriesData from '../../../assets/MockData/StoriesData';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import StackHeader from '../../../components/StackHeader';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getStories } from '../../../redux/Feeds/actions';
+import { getPostByCity } from '../../../redux/Post/actions';
 
 const requestLocationPermission = async () => {
   try {
@@ -47,11 +50,13 @@ const requestLocationPermission = async () => {
 
 const Feed = () => {
   const authState = useSelector((state)=>state.authState)
+  const feedState = useSelector((state)=>state.feedState)
+  const postState = useSelector((state)=>state.postState)
   const navigation = useNavigation();
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
   const [Location, setLocation] = useState('');
-// console.log("stateauth", authState.id)
+  const dispatch=useDispatch()
   LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
   const getCurrentPosition = () => {
     const result = requestLocationPermission();
@@ -72,7 +77,9 @@ const Feed = () => {
   };
   useEffect(() => {
     getCurrentPosition()
-  }, []);
+    dispatch(getStories(Location))
+    dispatch(getPostByCity(Location))
+  }, [Location]);
   LocationIQ.reverse(lat, long)
     .then(json => {
       var address = json.address.city;
@@ -81,6 +88,12 @@ const Feed = () => {
     .catch(error => console.log(error));
   return (
     <View style={styles.container}>
+       <OrientationLoadingOverlay
+        visible={feedState.loading}
+        color="white"
+        indicatorSize="large"
+        messageFontSize={24}
+      />
       <StackHeader
         headerImage={true}
         headerName="Feeds"
@@ -95,21 +108,21 @@ const Feed = () => {
         <Text style={styles.storiesText}>Stories</Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal>
           <View style={styles.storiesView}>
-            {StoriesData.map(i => {
+            {feedState?.stories?.map(i => {
               return (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('Stories', {stories: i.storiesImage})
+                    navigation.navigate('Stories', {stories: i.contentURL,content:i})
                   }>
                   <ImageBackground
                     style={[styles.storyButton]
                     }>
                     <Image
-                      source={{uri: i.storiesImage[0]}}
+                      source={{uri: i.contentURL}}
                       style={styles.image}
                     />
                   </ImageBackground>
-                  <Text style={styles.storyName}>{i?.name}</Text>
+                  <Text style={styles.storyName}>{i?.placeName}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -119,9 +132,9 @@ const Feed = () => {
       <View style={styles.feedView}>
         <FlatList
           style={styles.flatlist}
-          data={FeedsData}
-          renderItem={({item}) => <FeedsFlatlist data={item} />}
-          keyExtractor={item => item.id}
+          data={postState.postCity}
+          renderItem={({item}) => <FeedsFlatlist data={item} city={Location}/>}
+          keyExtractor={item => item._id}
         />
       </View>
       </ScrollView>

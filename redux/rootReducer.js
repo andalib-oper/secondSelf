@@ -4,13 +4,17 @@ import loginReducer from './Login/reducers'
 import emailReducer from './emailConfirm/reducer'
 import regReducer from './register/reducer';
 import FeedReducer from './Feeds/reducer';
+import PostReducer from './Post/reducers';
+import ActivityReducer from './Activity/reducers';
 
 const rootReducer = combineReducers({
   authState: authReducer,
   loginFormState: loginReducer,
   emailFormState: emailReducer,
   registerFormState: regReducer,
-  feedState: FeedReducer
+  feedState: FeedReducer,
+  postState:PostReducer,
+  activityState:ActivityReducer
 });
 
 export default rootReducer;

@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const Stories = ({route}) => {
   const navigation = useNavigation();
-  const {stories} = route.params;
+  const {stories,i} = route.params;
   return (
     <View>
       <StoryContainer
@@ -14,17 +14,15 @@ const Stories = ({route}) => {
         images={stories}
         onComplete={() => navigation.goBack()}
         duration={5}
-        headerComponent={<View style={{height:100}}>
-          <Text>fuck off</Text>
-        </View>}
+        headerComponent={<View/>}
         userProfile={{
-          userImage: stories[0] ,
-          userName: 'Yuvraj Pandey',
-          userMessage: 'Work hard & success will follow !!',
+          userImage: stories ,
+          userName: i?.placeName,
+          userMessage: i?.city,
           imageArrow:
             'https://cdn.iconscout.com/icon/free/png-256/back-arrow-1767531-1502435.png',
           onImageClick: () => {
-            console.log('lskndclksnc');
+            // console.log('lskndclksnc');
            navigation.goBack()
           },
         }}
