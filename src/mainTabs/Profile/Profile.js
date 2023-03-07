@@ -9,7 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
 import StackHeader from '../../../components/StackHeader';
@@ -17,19 +17,20 @@ import {useNavigation} from '@react-navigation/native';
 import ProfileInput from '../../../components/Profile/ProfileInput';
 import {useDispatch, useSelector} from 'react-redux';
 import {logUserOut} from '../../../redux/auth/action';
-import { getProfileDetailsByUserId } from '../../../redux/Profile/actions';
-import { getPostByUserId } from '../../../redux/Post/actions';
+import {getProfileDetailsByUserId} from '../../../redux/Profile/actions';
+import {getPostByUserId} from '../../../redux/Post/actions';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const authState = useSelector((state)=>state.authState)
-  const profileState=useSelector((state)=>state.profileState)
-  const postState = useSelector((state)=>state.postState)
+  const authState = useSelector(state => state.authState);
+  const profileState = useSelector(state => state.profileState);
+  const postState = useSelector(state => state.postState);
   const dispatch = useDispatch();
-  useEffect(()=>{
-dispatch(getProfileDetailsByUserId(authState.id))
-dispatch(getPostByUserId(authState.id))
-  },[authState.id])
+  useEffect(() => {
+    dispatch(getProfileDetailsByUserId(authState.id));
+    dispatch(getPostByUserId(authState.id));
+  }, [authState.id]);
+  console.log("pro",profileState?.profileDetails?.coverPicture)
   return (
     <View style={styles.container}>
       <StackHeader headerName="Profile" rightIcon={false} />
@@ -39,11 +40,17 @@ dispatch(getPostByUserId(authState.id))
             style={styles.ImageBackground}
             blurRadius={3}
             source={{
-              uri: 'https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171__480.jpg',
+              uri:
+                profileState?.profileDetails?.coverPicture !== undefined
+                  ? profileState?.profileDetails?.coverPicture
+                  : 'https://i.imgflip.com/1gqvcu.jpg',
             }}>
             <Image
               source={{
-                uri: 'https://assets.telegraphindia.com/telegraph/2021/Jun/1622577021_02metmall_4col.jpg',
+                uri:
+                  profileState?.profileDetails?.profilePicture !== undefined
+                    ? profileState?.profileDetails?.profilePicture
+                    : 'https://www.oseyo.co.uk/wp-content/uploads/2020/05/empty-profile-picture-png-2-2.png',
               }}
               style={styles.image}
             />
@@ -63,7 +70,11 @@ dispatch(getPostByUserId(authState.id))
           <ProfileInput
             editable={false}
             style={styles.input}
-            value={profileState?.profileDetails?.name?profileState?.profileDetails?.name:'Not Specified'}
+            value={
+              profileState?.profileDetails?.name
+                ? profileState?.profileDetails?.name
+                : 'Not Specified'
+            }
           />
         </View>
         {/* email section */}
@@ -72,7 +83,11 @@ dispatch(getPostByUserId(authState.id))
           <ProfileInput
             editable={false}
             style={styles.input}
-            value={profileState?.profileDetails?.email?profileState?.profileDetails?.email:'Not Specified'}
+            value={
+              profileState?.profileDetails?.email
+                ? profileState?.profileDetails?.email
+                : 'Not Specified'
+            }
           />
         </View>
         {/* phone number section */}
@@ -81,7 +96,11 @@ dispatch(getPostByUserId(authState.id))
           <ProfileInput
             editable={false}
             style={styles.input}
-            value={profileState?.profileDetails?.phoneNo?profileState?.profileDetails?.phoneNo:'Not Specified'}
+            value={
+              profileState?.profileDetails?.phoneNo
+                ? profileState?.profileDetails?.phoneNo
+                : 'Not Specified'
+            }
           />
         </View>
         {/* location section */}
@@ -90,7 +109,11 @@ dispatch(getPostByUserId(authState.id))
           <ProfileInput
             editable={false}
             style={styles.input}
-            value={profileState?.profileDetails?.location?profileState?.profileDetails?.location:'Not Specified'}
+            value={
+              profileState?.profileDetails?.location
+                ? profileState?.profileDetails?.location
+                : 'Not Specified'
+            }
           />
         </View>
         {/* GENDER section */}
@@ -99,7 +122,24 @@ dispatch(getPostByUserId(authState.id))
           <ProfileInput
             editable={false}
             style={styles.input}
-            value={profileState?.profileDetails?.gender?profileState?.profileDetails?.gender:'Not Specified'}
+            value={
+              profileState?.profileDetails?.gender
+                ? profileState?.profileDetails?.gender
+                : 'Not Specified'
+            }
+          />
+        </View>
+        {/* Interest section */}
+        <View style={styles.profileSectionRest}>
+          <Text style={styles.headerText}>Interest</Text>
+          <ProfileInput
+            editable={false}
+            style={styles.input}
+            value={
+              profileState?.profileDetails?.interest
+                ? profileState?.profileDetails?.interest.toString()
+                : 'Not Specified'
+            }
           />
         </View>
         {/* LOGOUT BUTTON */}

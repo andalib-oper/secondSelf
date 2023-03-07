@@ -16,6 +16,13 @@ import LocationIQ from 'react-native-locationiq';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
 import ProfileInput from '../../../components/Profile/ProfileInput';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  editProfileDetails,
+  newCoverPicture,
+  newProfilePicture,
+} from '../../../redux/Profile/actions';
+import {uploadDoc} from '../../../redux/auth/action';
 
 const requestLocationPermission = async () => {
   try {
@@ -44,36 +51,38 @@ const requestLocationPermission = async () => {
 
 const EditProfile = () => {
   const navigation = useNavigation();
+  const profileState = useSelector(state => state.profileState);
+  const authState = useSelector(state => state.authState);
+  const [res, setRes] = useState(profileState.profileDetails);
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
   const [Location, setLocation] = useState('');
-  const [interest, setInterest] = useState(['carrom', 'cricket']);
-  const [links, setLinks] = useState([
-    'https://unsplash.com/',
-    'www.w3school.com',
-  ]);
+  const [interest, setInterest] = useState([]);
+  const [links, setLinks] = useState([]);
   const [profilePic, setProfilePic] = useState('');
   const [profilePicImages, setProfilePicImages] = useState('');
   const [coverPic, setCoverPic] = useState('');
   const [coverPicImages, setcoverPicImage] = useState('');
   const [fileName, setFileName] = useState('');
   const [images, setImage] = useState('');
+  const dispatch = useDispatch();
   LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
   const launchLibrary = profile => {
     ImagePicker.openPicker({
       multiple: false,
     }).then(image => {
-      if (profile==true) {
+      if (profile=='profile') {
         setProfilePic(image.path);
         setProfilePicImages(image);
-      } 
-      else if(profile==false){
+        dispatch(newProfilePicture(image, authState.id));
+      } else if (profile=='cover') {
         setCoverPic(image.path);
         setcoverPicImage(image);
-      }else{
-        console.log('img', image?.path?.slice(-20));
-      setFileName(image?.path?.slice(-20));
-      setImage(image);
+        dispatch(newCoverPicture(image, authState.id));
+      } else if(profile=='doc') {
+        setFileName(image?.path?.slice(-20));
+        setImage(image);
+        dispatch(uploadDoc(image, authState.id));
       }
     });
   };
@@ -94,12 +103,35 @@ const EditProfile = () => {
       }
     });
   };
+  const handleChangeEdit = (name, inputValue) => {
+    setRes({...res, [name]: inputValue});
+  };
+  const onSubmit = () => {
+    dispatch(
+      editProfileDetails(
+        authState?.id,
+        res?.name,
+        res?.bio,
+        res?.phoneNo,
+        // Location?Location:res?.location,
+        res?.location==undefined?Location:res?.location,
+        res?.gender,
+        res?.maritalStatus,
+        res?.occupation,
+        // interest !== [] ? interest : res?.interest,
+        res?.interest==[]?interest:res.interest,
+        res?.links==[]?links:res.links,
+        // links !== [] ? links : res?.links,
+      ),
+    );
+  };
   LocationIQ.reverse(lat, long)
     .then(json => {
       var address = json.address.city;
       setLocation(address);
     })
     .catch(error => console.warn(error));
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -109,22 +141,22 @@ const EditProfile = () => {
             blurRadius={3}
             source={{
               uri:
-                coverPic === ''
-                  ? 'https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171__480.jpg'
-                  : coverPic,
+                profileState?.profileDetails?.coverPicture !== undefined
+                  ? profileState?.profileDetails?.coverPicture
+                  : 'https://i.imgflip.com/1gqvcu.jpg',
             }}>
             <ImageBackground
               borderRadius={100 / 1}
               source={{
                 uri:
-                  profilePic === ''
-                    ? 'https://assets.telegraphindia.com/telegraph/2021/Jun/1622577021_02metmall_4col.jpg'
-                    : profilePic,
+                  profileState?.profileDetails?.profilePicture !== undefined
+                    ? profileState?.profileDetails?.profilePicture
+                    : 'https://www.oseyo.co.uk/wp-content/uploads/2020/05/empty-profile-picture-png-2-2.png',
               }}
               style={styles.image}>
               <TouchableOpacity
                 onPress={() => {
-                  launchLibrary(true);
+                  launchLibrary('profile');
                 }}
                 style={styles.editProfilePic}>
                 <AntDesign name="camera" size={24} color={'#fff'} />
@@ -132,7 +164,7 @@ const EditProfile = () => {
             </ImageBackground>
             <TouchableOpacity
               onPress={() => {
-                launchLibrary(false);
+                launchLibrary('cover');
               }}
               style={styles.editProfilePic}>
               <AntDesign name="camera" size={24} color={'#fff'} />
@@ -148,8 +180,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={'Andalib Quraishi'}
-            onChangeText={() => console.log('first')}
+            value={res?.name}
+            onChangeText={e => handleChangeEdit('name', e)}
             keyboardType={'default'}
           />
         </View>
@@ -159,18 +191,18 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={[styles.input, {height: 80}]}
-            value={'Busy With my stuff bro'}
-            onChangeText={() => console.log('first')}
-            keyboardType={'numeric'}
+            value={res?.bio}
+            onChangeText={e => handleChangeEdit('bio', e)}
+            keyboardType={'default'}
           />
         </View>
         {/* email section */}
         <View style={styles.profileSectionRest}>
           <Text style={styles.headerText}>E-mail</Text>
           <ProfileInput
-            editable={true}
+            editable={false}
             style={styles.input}
-            value={'andalibquraishi1416@gmail.com'}
+            value={res?.email}
             onChangeText={() => console.log('first')}
             keyboardType={'default'}
           />
@@ -181,8 +213,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={'+91 9748125653'}
-            onChangeText={() => console.log('first')}
+            value={res?.phoneNo}
+            onChangeText={e => handleChangeEdit('phoneNo', e)}
             keyboardType={'numeric'}
           />
         </View>
@@ -193,7 +225,7 @@ const EditProfile = () => {
             style={styles.locationInput}
             onPress={() => getCurrentPosition()}>
             <Text style={styles.locationText}>
-              {Location === '' ? 'Kolkata' : Location}
+              {res?.location === undefined ? 'Not specified' : res?.location!= undefined?res?.location:Location}
             </Text>
           </TouchableOpacity>
         </View>
@@ -203,8 +235,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={'Female'}
-            onChangeText={() => console.log('first')}
+            value={res?.gender}
+            onChangeText={e => handleChangeEdit('gender', e)}
             keyboardType={'default'}
           />
         </View>
@@ -214,8 +246,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={'Single'}
-            onChangeText={() => console.log('first')}
+            value={res?.maritalStatus}
+            onChangeText={e => handleChangeEdit('maritalStatus', e)}
             keyboardType={'default'}
           />
         </View>
@@ -225,8 +257,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={'React Native Developer'}
-            onChangeText={() => console.log('first')}
+            value={res?.occupation}
+            onChangeText={e => handleChangeEdit('occupation', e)}
             keyboardType={'default'}
           />
         </View>
@@ -236,8 +268,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={interest.toString()}
-            onChangeText={e => setInterest(e.split(','))}
+            value={res?.interest==[]?interest.toString():res?.interest.toString()}
+            onChangeText={e => handleChangeEdit('interest',e.split(','))}
             keyboardType={'default'}
           />
         </View>
@@ -248,7 +280,7 @@ const EditProfile = () => {
             editable={true}
             style={styles.input}
             value={links.toString()}
-            onChangeText={e => setLinks(e.split(','))}
+            onChangeText={e => handleChangeEdit('links',e.split(','))}
             keyboardType={'default'}
           />
         </View>
@@ -257,7 +289,7 @@ const EditProfile = () => {
           <Text style={styles.headerText}>Upload Id Proof</Text>
           <TouchableOpacity
             style={styles.locationInput}
-            onPress={() => launchLibrary(null)}>
+            onPress={() => launchLibrary('doc')}>
             <Text style={styles.locationText}>
               {fileName === '' ? 'Upload Id Proof' : fileName}
               {/* doc */}
@@ -267,6 +299,7 @@ const EditProfile = () => {
         {/* Update Button  */}
         <TouchableOpacity
           onPress={() => {
+            onSubmit();
             navigation.goBack();
           }}
           style={styles.createActivityButton}>

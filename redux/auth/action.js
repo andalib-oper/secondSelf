@@ -194,7 +194,6 @@ export const tokenRetriever = () => {
 };
 
 export const uploadDoc = (image,id) => {
-  // console.log('image', image,id);
   return async dispatch => {
     dispatch(req())
     try {
@@ -215,7 +214,6 @@ export const uploadDoc = (image,id) => {
       }
       );
       if(response){
-        // console.log("response", response.data)
         dispatch(doc(response.data))
       }
 

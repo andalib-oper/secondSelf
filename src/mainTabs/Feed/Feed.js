@@ -14,10 +14,8 @@ import React,{useState,useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import LocationIQ from 'react-native-locationiq';
-import StoriesData from '../../../assets/MockData/StoriesData';
 import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import StackHeader from '../../../components/StackHeader';
-import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStories } from '../../../redux/Feeds/actions';
