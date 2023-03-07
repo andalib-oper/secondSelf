@@ -1,4 +1,4 @@
-import {GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, REQ_POST,LIKE,DISLIKE, COMMENT, GET_ALL_POST_BY_USERID } from "./actionTypes";
+import {GET_ALL_POST_BY_CITY, REQ_FAILURE_POST, REQ_POST,LIKE,DISLIKE, COMMENT, GET_ALL_POST_BY_USERID, CREATE_POST } from "./actionTypes";
 import {BASE_URL} from '@env'
 import axios from 'axios';
 
@@ -20,7 +20,10 @@ export const like = (data) => ({
     type: COMMENT,
     data
   });
-
+  export const createPost = data => ({
+    type: CREATE_POST,
+    data,
+  });
   export const postCity = (data) => ({
     type: GET_ALL_POST_BY_CITY,
     data
@@ -63,6 +66,7 @@ export const getPostByUserId = (authId) => {
             );
             if (response) {
                 dispatch(postUserId(response.data))
+                // console.log("res",response.data)
             }
         } catch (err) {
             console.log("request failed user post")
@@ -129,3 +133,45 @@ export const postComment = (postId,authId,city) => {
     };
 }
 
+export const createPostByUserId = (
+    authId,
+    description,
+   content,
+   city
+  ) => {
+    return async dispatch => {
+      dispatch(reqPost());
+      console.log("olol",  authId,
+      description,
+     content,
+     city)
+      try {
+        const formData = new FormData();
+      formData.append('content',{
+        uri: content.path,
+        type: content.type,
+        name: content.filename || `filename${content.size}.jpg`,
+      })
+      / formData.append('description', description)
+      formData.append('city', city)
+      formData.append('userId', authId)
+        const response = await axios.post(BASE_URL + `/api/post`, 
+         formData,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+    );
+        if (response) {
+          dispatch(createPost(response.data));
+          console.log("respo",response.data)
+        }
+      } catch (err) {
+        console.log('request failed post');
+        console.log(err.message);
+        dispatch(reqFailure(err.message));
+      }
+    };
+  };

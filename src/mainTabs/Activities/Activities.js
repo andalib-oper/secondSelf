@@ -13,7 +13,12 @@ const Activities = () => {
     <View style={styles.container}>
         <StackHeader
         headerName="Activities"
-        rightIcon={false}
+        rightIcon={true}
+        rightIconStyle={true}
+        filterName="plussquareo"
+        filterSize={26}
+        filterColor={'#fff'}
+        filterNavigation={() => {navigation.navigate('CreateActivity')}}
       />
         <View style={styles.tabHead}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>

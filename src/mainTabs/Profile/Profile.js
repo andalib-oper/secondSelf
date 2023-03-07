@@ -19,18 +19,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import {logUserOut} from '../../../redux/auth/action';
 import {getProfileDetailsByUserId} from '../../../redux/Profile/actions';
 import {getPostByUserId} from '../../../redux/Post/actions';
+import { getActivityByUserId } from '../../../redux/Activity/actions';
+import ActivityFlatlist from '../../../components/Activity/ActivityFlatlist';
 
 const Profile = () => {
   const navigation = useNavigation();
   const authState = useSelector(state => state.authState);
   const profileState = useSelector(state => state.profileState);
   const postState = useSelector(state => state.postState);
+  const activityState = useSelector((state)=>state.activityState)
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getProfileDetailsByUserId(authState.id));
+    dispatch(getActivityByUserId(authState.id))
     dispatch(getPostByUserId(authState.id));
   }, [authState.id]);
-  console.log("pro",profileState?.profileDetails?.coverPicture)
   return (
     <View style={styles.container}>
       <StackHeader headerName="Profile" rightIcon={false} />
@@ -152,13 +155,13 @@ const Profile = () => {
         </TouchableOpacity>
         {/* Activities section */}
         <View style={styles.profileView}>
-          <Text style={styles.profileHeader}>Your Activies</Text>
+          <Text style={styles.profileHeader}>Your Activities</Text>
         </View>
         <View style={styles.feedView}>
           <FlatList
             style={styles.flatlist}
-            data={postState.postUserId}
-            renderItem={({item}) => <FeedsFlatlist data={item} />}
+            data={activityState.activity}
+            renderItem={({item}) => <ActivityFlatlist data={item} />}
             keyExtractor={item => item.id}
           />
         </View>

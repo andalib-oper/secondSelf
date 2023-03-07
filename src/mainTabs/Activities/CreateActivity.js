@@ -11,53 +11,50 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-import Geolocation from 'react-native-geolocation-service';
-import LocationIQ from 'react-native-locationiq';
-import TimeRangePicker from 'react-native-range-timepicker';
 import moment from 'moment';
-
-const requestLocationPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Geolocation Permission',
-        message: 'Can we access your location?',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    console.log('granted', granted);
-    if (granted === 'granted') {
-      console.log('You can use Geolocation');
-      return true;
-    } else {
-      console.log('You cannot use Geolocation');
-      return false;
-    }
-  } catch (err) {
-    return false;
-  }
-};
+import {useDispatch, useSelector} from 'react-redux';
+import {createActivityByUserId} from '../../../redux/Activity/actions';
 
 const CreateActivity = ({navigation}) => {
+  const dispatch = useDispatch();
+  const authState = useSelector(state => state.authState);
   const [date, setDate] = useState(new Date());
+  const [text, setText] = useState('');
   const [open, setOpen] = useState(false);
   const [openTime, setOpenTime] = useState(false);
   const [time, setTime] = useState(new Date());
   const [Location, setLocation] = useState('');
+  const onSubmit = () => {
+    dispatch(
+      createActivityByUserId(
+        authState?.id,
+        text,
+        Location,
+        date,
+        time.toLocaleTimeString(),
+      ),
+    );
+    setLocation('');
+    setText('');
+    setDate(new Date());
+    setTime(new Date());
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
-        {/* date view */}
+      {/* date view */}
       <View>
         <Text style={styles.headerText}>Date of Activity</Text>
-        <TouchableOpacity style={styles.dateButton} onPress={()=>setOpen(true)}>
-          <Text style={styles.dateText}>{date.getDate()?moment(date).format('YYYY-MM-DD'):'Select date'}</Text>
+        <TouchableOpacity
+          style={styles.dateButton}
+          onPress={() => setOpen(true)}>
+          <Text style={styles.dateText}>
+            {date.getDate() ? moment(date).format('YYYY-MM-DD') : 'Select date'}
+          </Text>
         </TouchableOpacity>
         <DatePicker
           modal
-          mode='date'
+          mode="date"
           open={open}
           date={date}
           onConfirm={date => {
@@ -72,12 +69,16 @@ const CreateActivity = ({navigation}) => {
       {/* time view */}
       <View>
         <Text style={styles.headerText}>Time of Activity</Text>
-        <TouchableOpacity style={styles.dateButton} onPress={()=>setOpenTime(true)}>
-          <Text style={styles.dateText}>{time?time.toLocaleTimeString():'Select date'}</Text>
+        <TouchableOpacity
+          style={styles.dateButton}
+          onPress={() => setOpenTime(true)}>
+          <Text style={styles.dateText}>
+            {time ? time.toLocaleTimeString() : 'Select date'}
+          </Text>
         </TouchableOpacity>
         <DatePicker
           modal
-          mode='time'
+          mode="time"
           open={openTime}
           date={time}
           onConfirm={time => {
@@ -91,18 +92,37 @@ const CreateActivity = ({navigation}) => {
       </View>
       {/* location view */}
       <View>
-      <Text style={styles.headerText}>Location</Text>
-       <TextInput
-       style={styles.input}
-       value={Location}
-       onChangeText={(text)=>setLocation(text)}
-       keyboardType={'default'}
-       placeholder='PLace You want to visit'
-       placeholderTextColor={'grey'}
-       />
+        <Text style={styles.headerText}>Location</Text>
+        <TextInput
+          style={styles.input}
+          value={Location}
+          onChangeText={text => setLocation(text)}
+          keyboardType={'default'}
+          placeholder="PLace You want to visit"
+          placeholderTextColor={'grey'}
+        />
+      </View>
+
+      <View>
+        <Text style={styles.headerText}>Description</Text>
+        <TextInput
+          style={[styles.input, {height: 100}]}
+          value={text}
+          onChangeText={text => setText(text)}
+          multiline={true}
+          textAlignVertical={'top'}
+          keyboardType={'default'}
+          placeholder="Description of your journey"
+          placeholderTextColor={'grey'}
+        />
       </View>
       {/* create button */}
-      <TouchableOpacity onPress={()=>{navigation.navigate('ActivitiesStack',{screen:'Activities'})}} style={styles.createActivityButton}>
+      <TouchableOpacity
+        onPress={() => {
+          onSubmit(),
+            navigation.navigate('ActivitiesStack', {screen: 'Activities'});
+        }}
+        style={styles.createActivityButton}>
         <Text style={styles.createActivityText}>Create Activity</Text>
       </TouchableOpacity>
     </View>
@@ -125,11 +145,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: '5%',
-    marginTop:'5%',
+    marginTop: '5%',
   },
   dateButton: {
     marginLeft: '5%',
-    marginTop:'5%',
+    marginTop: '5%',
     width: windowWidth / 1.1,
     padding: 10,
     borderRadius: 10,
@@ -140,12 +160,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-  timeView:{
-    flexDirection:'row'
+  timeView: {
+    flexDirection: 'row',
   },
   timeButton: {
     marginLeft: '5%',
-    marginTop:'5%',
+    marginTop: '5%',
     width: windowWidth / 2.3,
     padding: 10,
     borderRadius: 10,
@@ -158,23 +178,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: 'grey',
     marginLeft: '5%',
-    marginTop:'5%',
+    marginTop: '5%',
     backgroundColor: '#fff',
     padding: 10,
   },
-  createActivityButton:{
-    alignSelf:'center',
-    width:windowWidth/1.2,
-    padding:10,
-    backgroundColor:'#fff',
-    marginTop:'20%',
-    borderRadius:10,
+  createActivityButton: {
+    alignSelf: 'center',
+    width: windowWidth / 1.2,
+    padding: 10,
+    backgroundColor: '#fff',
+    marginTop: '20%',
+    borderRadius: 10,
   },
-  createActivityText:{
-fontSize:16,
-padding:10,
-alignSelf:'center',
-color:'#000',
-fontWeight:'bold'
-  }
+  createActivityText: {
+    fontSize: 16,
+    padding: 10,
+    alignSelf: 'center',
+    color: '#000',
+    fontWeight: 'bold',
+  },
 });

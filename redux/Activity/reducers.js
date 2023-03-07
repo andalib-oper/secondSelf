@@ -1,9 +1,16 @@
-const { REQ_ACTIVITY,REQ_FAILURE_ACTIVITY, UPCOMING_ACTIVITY, ACTIVE_ACTIVITY, COMPLETED_ACTIVITY } = require('./actionTypes');
+const { REQ_ACTIVITY,REQ_FAILURE_ACTIVITY, 
+  CREATE_ACTIVITY,
+  UPCOMING_ACTIVITY, 
+  ACTIVE_ACTIVITY, 
+  COMPLETED_ACTIVITY, 
+  GET_ACTIVITY_BY_USERID} = require('./actionTypes');
 
 const initialState = {
+  createActivity:[],
   activityActive:[],
   activityUpcoming:[],
   activityCompleted:[],
+  activity:[],
   loading:false,
   error:''
 };
@@ -16,10 +23,25 @@ const ActivityReducer = (state = initialState, action) => {
         loading: true,
       };
     }
+    case CREATE_ACTIVITY: {
+      return {
+        ...state,
+        createActivity: action.data,
+        loading: false,
+      };
+    }
     case UPCOMING_ACTIVITY: {
       return {
         ...state,
         activityUpcoming: action.data,
+        loading: false,
+      };
+    }
+    case GET_ACTIVITY_BY_USERID: {
+      console.log("red",action.data)
+      return {
+        ...state,
+        activity: action.data,
         loading: false,
       };
     }

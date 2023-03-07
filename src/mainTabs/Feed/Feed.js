@@ -99,7 +99,7 @@ const Feed = () => {
         filterName="plussquareo"
         filterSize={26}
         filterColor={'#fff'}
-        filterNavigation={() => {navigation.navigate('CreateActivity')}}
+        filterNavigation={() => {navigation.navigate('CreatePost')}}
       />
       <ScrollView>
       <View style={styles.storiesContainer}>
@@ -107,16 +107,18 @@ const Feed = () => {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal>
           <View style={styles.storiesView}>
             {feedState?.stories?.map(i => {
+              let arr=[]
+              arr.push(i?.contentURL)
               return (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('Stories', {stories: i.contentURL,content:i})
+                    navigation.navigate('Stories', {stories: arr,content:i})
                   }>
                   <ImageBackground
                     style={[styles.storyButton]
                     }>
                     <Image
-                      source={{uri: i.contentURL}}
+                      source={{uri: arr[0]}}
                       style={styles.image}
                     />
                   </ImageBackground>

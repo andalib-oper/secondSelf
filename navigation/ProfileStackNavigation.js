@@ -6,6 +6,7 @@ import Chat from '../src/mainTabs/Chat/Chat';
 import ChatDetails from '../src/mainTabs/Chat/ChatDetails';
 import Profile from '../src/mainTabs/Profile/Profile';
 import EditProfile from '../src/mainTabs/Profile/EditProfile';
+import ActivityDetails from '../src/mainTabs/Activities/ActivityDetails';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,21 @@ const ProfileStackNavigation = ({navigation,route}) => {
         options={{
           headerShown: true,
           headerTitle: 'Edit Profile',
+          headerStyle:{
+            backgroundColor:'#000'
+          },
+          headerTitleStyle:{
+            color:'#fff'
+          },
+          headerTintColor:'#fff'
+        }}
+      />
+       <Stack.Screen
+        name="ActivityDetails"
+        component={ActivityDetails}
+        options={{
+          headerShown: true,
+          headerTitle: 'Activity Details',
           headerStyle:{
             backgroundColor:'#000'
           },

@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const Stories = ({route}) => {
   const navigation = useNavigation();
-  const {stories,i} = route.params;
+  const {stories,content} = route.params;
   return (
     <View>
       <StoryContainer
@@ -16,9 +16,9 @@ const Stories = ({route}) => {
         duration={5}
         headerComponent={<View/>}
         userProfile={{
-          userImage: stories ,
-          userName: i?.placeName,
-          userMessage: i?.city,
+          userImage: stories[0] ,
+          userName: content?.placeName,
+          userMessage: content?.city,
           imageArrow:
             'https://cdn.iconscout.com/icon/free/png-256/back-arrow-1767531-1502435.png',
           onImageClick: () => {

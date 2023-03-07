@@ -45,7 +45,7 @@ const StackHeader = prop => {
           </Text>
         </View>
         <TouchableOpacity
-          style={styles.iconFilter}
+          style={prop.rightIconStyle?[styles.iconFilter,{marginLeft:'14%'}]:[styles.iconFilter]}
           onPress={prop.filterNavigation}>
           {prop.rightIcon ? (
             <AntDesign

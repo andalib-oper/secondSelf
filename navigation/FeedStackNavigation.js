@@ -7,6 +7,7 @@ import Stories from '../src/mainTabs/Feed/Stories';
 import Comments from '../src/mainTabs/Feed/Comments';
 import CameraOptions from '../src/mainTabs/Feed/CameraOptions';
 import CreateActivity from '../src/mainTabs/Activities/CreateActivity';
+import CreatePost from '../src/mainTabs/Feed/CreatePost';
 
 const Stack = createStackNavigator();
 
@@ -34,11 +35,11 @@ const FeedStackNavigation = ({navigation,route}) => {
         options={{headerShown: false}}
       />
        <Stack.Screen
-        name="CreateActivity"
-        component={CreateActivity}
+        name="CreatePost"
+        component={CreatePost}
         options={{
           headerShown: true,
-          headerTitle: 'Create Activity',
+          headerTitle: 'Create Post',
           headerStyle:{
             backgroundColor:'#000'
           },
