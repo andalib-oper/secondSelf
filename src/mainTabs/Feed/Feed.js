@@ -84,6 +84,7 @@ const Feed = () => {
       setLocation(address);
     })
     .catch(error => console.log(error));
+    console.log("authid", authState.id)
   return (
     <View style={styles.container}>
        <OrientationLoadingOverlay

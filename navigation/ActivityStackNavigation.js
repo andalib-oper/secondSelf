@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import ActivityDetails from '../src/mainTabs/Activities/ActivityDetails';
 import Activities from '../src/mainTabs/Activities/Activities';
+import CreateActivity from '../src/mainTabs/Activities/CreateActivity';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,21 @@ const ActivityStackNavigation = ({navigation,route}) => {
         name="Activities"
         component={Activities}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CreateActivity"
+        component={CreateActivity}
+        options={{
+          headerShown: true,
+          headerTitle: 'Create Activity',
+          headerStyle:{
+            backgroundColor:'#000'
+          },
+          headerTitleStyle:{
+            color:'#fff'
+          },
+          headerTintColor:'#fff'
+        }}
       />
        <Stack.Screen
         name="ActivityDetails"

@@ -13,6 +13,7 @@ import moment from 'moment';
 
 const ActivityFlatlist = ({data, join}) => {
   const navigation = useNavigation();
+  console.log("data",data[0]?.location)
   return (
     <TouchableOpacity
       style={styles.container}
@@ -36,7 +37,7 @@ const ActivityFlatlist = ({data, join}) => {
               ? [styles.activityDetails, {width: '60%'}]
               : [styles.activityDetails]
           }>
-          <Text style={styles.activityText}>Location: {data.location}</Text>
+          <Text style={styles.activityText}>Location: {data?.location}</Text>
           <Text style={styles.activityText} ellipsizeMode={'tail'} numberOfLines={1}>Description: {data?.description}</Text>
           <Text style={styles.activityText}>Time: {data?.time}</Text>
           <Text style={styles.activityText}>
@@ -67,22 +68,7 @@ const ActivityFlatlist = ({data, join}) => {
                   ) : null}
                 </>
               ) : (
-                <>
-                  {data?.maxPeople.slice(0, 4).map(i => {
-                    return (
-                      <>
-                        <Image source={{uri: i.img}} style={styles.image} />
-                      </>
-                    );
-                  })}
-                  {data?.maxPeople.length > 4 ? (
-                    <View style={styles.groupIcon}>
-                      <Text style={styles.groupIconText}>
-                        +{data?.maxPeople.length - 4}
-                      </Text>
-                    </View>
-                  ) : null}
-                </>
+               null
               )}
             </View>
           )}

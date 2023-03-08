@@ -5,9 +5,9 @@ import Ongoing from './Ongoing';
 import Upcoming from './Upcoming';
 import Completed from './Completed';
 
-const Activities = () => {
+const Activities = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const status = ['Active', 'Upcoming', 'Completed'];
+  const status = ['All', 'Upcoming', 'Completed'];
   let upcoming = true
   return (
     <View style={styles.container}>

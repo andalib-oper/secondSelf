@@ -1,14 +1,22 @@
 import { StyleSheet, Text, View,FlatList,Dimensions} from 'react-native'
-import React from 'react'
+import React,{useEffect} from 'react'
 import ActivitiesData from '../../../assets/MockData/ActivitiesData'
 import ActivityFlatlist from '../../../components/Activity/ActivityFlatlist'
+import { useDispatch, useSelector } from 'react-redux'
+import { getActivityByUserId } from '../../../redux/Activity/actions'
 
 const Completed = () => {
+  const dispatch = useDispatch();
+  const authState = useSelector((state)=>state.authState)
+  const activityState = useSelector((state)=>state.activityState)
+  useEffect(() => {
+    dispatch(getActivityByUserId(authState.id))
+  }, [authState.id]);
   return (
     <View style={styles.container}>
         <FlatList
       style={styles.flatlist}
-      data={ActivitiesData}
+      data={activityState.activityCompleted}
       renderItem={({item}) => <ActivityFlatlist data={item}/>}
       keyExtractor={item => item.id}
       />
