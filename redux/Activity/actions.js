@@ -3,6 +3,7 @@ import {
   COMPLETED_ACTIVITY,
   CREATE_ACTIVITY,
   GET_ACTIVITY_BY_USERID,
+  JOIN_USER,
   REQ_ACTIVITY,
   REQ_FAILURE_ACTIVITY,
   UPCOMING_ACTIVITY,
@@ -21,6 +22,11 @@ export const createActivity = data => ({
 
 export const activityByUserId = data => ({
   type: GET_ACTIVITY_BY_USERID,
+  data,
+});
+
+export const joinUser = data => ({
+  type: JOIN_USER,
   data,
 });
 
@@ -68,6 +74,30 @@ export const getActivityByUserId = (authId) => {
         );
         if (response) {
           dispatch(activityByUserId(response.data));
+        }
+    } catch (err) {
+      console.log('request failed activity');
+      console.log(err.message);
+      dispatch(reqFailure(err.message));
+    }
+  };
+};
+
+export const joinUsersInActivity = (activityId,authId) => {
+  return async dispatch => {
+    dispatch(reqActivity());
+    console.log("act", activityId)
+    try {
+        const response = await axios.post(
+          BASE_URL + `/api/activity/${activityId}/participants`,
+          {
+            userId:authId
+          }
+        );
+        if (response) {
+          dispatch(joinUser(response.data));
+          dispatch(getActivityByUserId(authId))
+          console.log("joining", response.data)
         }
     } catch (err) {
       console.log('request failed activity');

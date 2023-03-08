@@ -5,7 +5,7 @@ const JoiningActCompo = props => {
   return (
     <View>
       {props.join ? (
-        <TouchableOpacity style={styles.JoinButton}>
+        <TouchableOpacity style={styles.JoinButton} onPress={props.onPress}>
           <Text style={styles.joinButtonText}>Join</Text>
         </TouchableOpacity>
       ) : null}

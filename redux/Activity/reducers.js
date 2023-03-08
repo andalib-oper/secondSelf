@@ -2,10 +2,8 @@ import moment from 'moment';
 
 const { REQ_ACTIVITY,REQ_FAILURE_ACTIVITY, 
   CREATE_ACTIVITY,
-  UPCOMING_ACTIVITY, 
-  ACTIVE_ACTIVITY, 
-  COMPLETED_ACTIVITY, 
-  GET_ACTIVITY_BY_USERID} = require('./actionTypes');
+  GET_ACTIVITY_BY_USERID,
+  JOIN_USER} = require('./actionTypes');
 
 const initialState = {
   createActivity:[],
@@ -13,6 +11,7 @@ const initialState = {
   activityUpcoming:[],
   activityCompleted:[],
   activity:[],
+  joinUser:[],
   loading:false,
   error:''
 };
@@ -32,13 +31,6 @@ const ActivityReducer = (state = initialState, action) => {
         loading: false,
       };
     }
-    case UPCOMING_ACTIVITY: {
-      return {
-        ...state,
-        activityUpcoming: action.data,
-        loading: false,
-      };
-    }
     case GET_ACTIVITY_BY_USERID: {
       let date = moment().format('YYYY-MM-DD')
       let time = new Date().toLocaleTimeString()
@@ -54,20 +46,14 @@ const ActivityReducer = (state = initialState, action) => {
         loading: false,
       };
     }
-    case ACTIVE_ACTIVITY: {
-        return {
-          ...state,
-          activityActive: action.data,
-          loading: false,
-        };
-      }
-      case COMPLETED_ACTIVITY: {
-        return {
-          ...state,
-          activityCompleted: action.data,
-          loading: false,
-        };
-      }
+    case JOIN_USER: {
+      console.log("join user", action.data)
+      return {
+        ...state,
+        joinUser: action.data,
+        loading: false,
+      };
+    }
     case REQ_FAILURE_ACTIVITY: {
         return{
          ...state,

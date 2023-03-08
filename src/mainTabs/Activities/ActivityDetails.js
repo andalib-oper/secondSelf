@@ -18,25 +18,12 @@ const ActivityDetails = ({route}) => {
           <Text style={[styles.activityNameHeader, {marginTop: '10%'}]}>
             People Your Are Going To Enjoy With
           </Text>
-          {data?.maxPeople ? (
-            <>
-              {data.maxPeople.map(i => {
-                return (
-                  <View style={styles.memberView}>
-                    <Image source={{uri: i.img}} style={styles.image} />
-                    <Text style={[styles.activityHeaderText, {color: '#000'}]}>
-                      {i.name}
-                    </Text>
-                  </View>
-                );
-              })}
-            </>
-          ) : (
+          {data?.participants ? (
             <>
               {data.participants.map(i => {
                 return (
                   <View style={styles.memberView}>
-                    <Image source={{uri: i.img}} style={styles.image} />
+                    <Image source={{uri: i.img?i.img:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}} style={styles.image} />
                     <Text style={[styles.activityHeaderText, {color: '#000'}]}>
                       {i.name}
                     </Text>
@@ -44,7 +31,9 @@ const ActivityDetails = ({route}) => {
                 );
               })}
             </>
-          )}
+          ):
+          null
+            }
         </View>
       </View>
     </View>
