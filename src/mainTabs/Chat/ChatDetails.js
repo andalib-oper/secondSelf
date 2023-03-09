@@ -206,7 +206,7 @@ const ChatDetails = ({route}) => {
       <StackHeader
         headerImage={true}
         headerIcon={true}
-        headerName={data.placeName}
+        headerName={data.name}
         rightIcon={false}
       />
       <ScrollView>

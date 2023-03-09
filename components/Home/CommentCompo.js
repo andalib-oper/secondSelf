@@ -13,13 +13,13 @@ import { useSelector } from 'react-redux';
 
 const CommentCompo = (props) => {
   const authState = useSelector((state)=>state.authState)
-  const authId = authState.userId;
+  const authId = authState.id;
   const navigation = useNavigation()
   return (
     <View>
           {props.send == authId ? (
             <>
-              <View style={{flexDirection: 'row', marginBottom: '1%'}}>
+              <View style={{flexDirection: 'row'}}>
                 <View style={{flexDirection: 'column'}}>
                   <View style={styles.messageRight} key={props.key2}>
                     <Text style={styles.senderUsername}>{props.username}</Text>

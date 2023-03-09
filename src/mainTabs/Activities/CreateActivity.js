@@ -14,6 +14,7 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {createActivityByUserId} from '../../../redux/Activity/actions';
+import { createGroupByUserId } from '../../../redux/Chat/actions';
 
 const CreateActivity = ({navigation}) => {
   const dispatch = useDispatch();
@@ -24,6 +25,8 @@ const CreateActivity = ({navigation}) => {
   const [openTime, setOpenTime] = useState(false);
   const [time, setTime] = useState(new Date());
   const [Location, setLocation] = useState('');
+  let members = []
+  members.push(authState.id)
   const onSubmit = () => {
     dispatch(
       createActivityByUserId(
@@ -34,6 +37,7 @@ const CreateActivity = ({navigation}) => {
         time.toLocaleTimeString(),
       ),
     );
+    dispatch(createGroupByUserId(authState.id,text,Location,members))
     setLocation('');
     setText('');
     setDate(new Date());

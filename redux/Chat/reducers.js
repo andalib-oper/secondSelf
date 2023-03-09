@@ -1,7 +1,10 @@
-const {REQ_FAILURE_CHAT, GET_ALL_CHAT_USERID, REQ_CHAT} = require('./actionTypes');
+const {REQ_FAILURE_CHAT, GET_ALL_CHAT_USERID, REQ_CHAT, CREATE_GROUP, ADD_USER_IN_GROUP, FILTERED} = require('./actionTypes');
 
 const initialState = {
   chats:[],
+  createGroup:[],
+  filtered:[],
+  joinUser:[],
   loading:false,
   error:''
 };
@@ -18,6 +21,27 @@ const ChatReducer = (state = initialState, action) => {
       return {
         ...state,
         chats: action.data,
+        loading: false,
+      };
+    }
+    case CREATE_GROUP: {
+      return {
+        ...state,
+        createGroup: action.data,
+        loading: false,
+      };
+    }
+    case ADD_USER_IN_GROUP: {
+      return {
+        ...state,
+        joinUser: action.data,
+        loading: false,
+      };
+    }
+    case FILTERED: {
+      return {
+        ...state,
+        filtered: action.data,
         loading: false,
       };
     }

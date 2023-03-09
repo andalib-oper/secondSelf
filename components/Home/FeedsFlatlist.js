@@ -58,7 +58,7 @@ const FeedsFlatlist = ({data, city}) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Comments', {id: data._id});
+                navigation.navigate('Comments', {id: data._id,comments: data?.comments.map((i)=>i)});
               }}
               style={styles.likeStyle}>
               <FontAwesome name={'comment-o'} size={24} color={'#fff'} />

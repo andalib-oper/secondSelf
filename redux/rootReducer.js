@@ -7,6 +7,7 @@ import FeedReducer from './Feeds/reducer';
 import PostReducer from './Post/reducers';
 import ActivityReducer from './Activity/reducers';
 import ProfileReducer from './Profile/reducers';
+import ChatReducer from './Chat/reducers';
 
 const rootReducer = combineReducers({
   authState: authReducer,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   feedState: FeedReducer,
   postState:PostReducer,
   activityState:ActivityReducer,
-  profileState:ProfileReducer
+  profileState:ProfileReducer,
+  chatState:ChatReducer
 });
 
 export default rootReducer;

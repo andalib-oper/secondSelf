@@ -1,26 +1,34 @@
 import { FlatList, StyleSheet, Text, View,Dimensions,ScrollView } from 'react-native'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import SearchBar from "react-native-dynamic-search-bar";
 import StackHeader from '../../../components/StackHeader'
 import ChatData from '../../../assets/MockData/ChatData'
 import ChatFlatlist from '../../../components/Chat/ChatFlatlist'
+import { useDispatch, useSelector } from 'react-redux';
+import { filtering, getChatByUserId } from '../../../redux/Chat/actions';
 
 const Chat = () => {
-  const [filteredData,setFilteredData]=useState(ChatData)
+  const dispatch=useDispatch()
+  const chatState = useSelector((state)=>state.chatState)
+  const authState = useSelector((state)=>state.authState)
   const [ searchText,setSearchText]=useState('')
+  const [filteredData,setFilteredData]=useState(chatState.chats)
+  useEffect(()=>{
+     dispatch(getChatByUserId(authState.id))
+  },[authState.id])
   const search = (text) =>{
     if (text) {
-      const newData = ChatData.filter(function (item) {
-        const itemData = item.placeName
-          ? item.placeName.toUpperCase()
+      const newData = chatState.chats.filter(function (item) {
+        const itemData = item.name
+          ? item.name.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
-      setFilteredData(newData);
+      dispatch(filtering(newData));
       setSearchText(text);
     } else {
-      setFilteredData(ChatData);
+      dispatch(filtering(chatState.chats));
       setSearchText(text);
     }
   }
@@ -34,7 +42,7 @@ const Chat = () => {
       <SearchBar
       style={styles.searchbar}
       placeholder="Search here"
-      onPress={() => alert("onPress")}
+      onClearPress={()=>{setSearchText(''),dispatch(getChatByUserId(authState.id))}}
       onChangeText={(text) => search(text)}
       />
       </View>
@@ -42,7 +50,7 @@ const Chat = () => {
       <View>
         <FlatList
          style={styles.flatlist}
-         data={filteredData}
+         data={chatState.filtered}
          renderItem={({item}) => <ChatFlatlist data={item}/>}
          keyExtractor={item => item.id}
         />

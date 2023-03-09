@@ -12,14 +12,17 @@ import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {joinUsersInActivity} from '../../redux/Activity/actions';
+import { joinUsersInGroup } from '../../redux/Chat/actions';
 
 const ActivityFlatlist = ({data, join}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const authState = useSelector(state => state.authState);
-  let c = data?.participants.map(i => i._id);
-  const joinGroup = id => {
+  const chatState = useSelector((state)=>state.chatState)
+  const joinGroup = (id,name) => {
+    let v =chatState.chats.filter((i)=>i?.name==name)
     dispatch(joinUsersInActivity(id, authState.id));
+    dispatch(joinUsersInGroup(v[0]?._id,authState.id))
   };
   return (
     <TouchableOpacity
@@ -59,10 +62,13 @@ const ActivityFlatlist = ({data, join}) => {
         <View style={{alignSelf: 'center'}}>
           {join ? (
             <>
-              {c.includes(authState.id)? null : (
+              {
+                data?.organizer?._id===authState.id
+              ? null 
+              : (
                 <JoiningActCompo
                   join={join}
-                  onPress={() => joinGroup(data?._id)}
+                  onPress={() => joinGroup(data?._id,data?.location)}
                 />
               )}
             </>
