@@ -10,8 +10,8 @@ import {
   FlatList,
   PermissionsAndroid
 } from 'react-native';
-import React,{useState,useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React,{useState,useEffect,useCallback} from 'react';
+import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import LocationIQ from 'react-native-locationiq';
 import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
@@ -73,11 +73,13 @@ const Feed = () => {
       }
     });
   };
-  useEffect(() => {
+  useFocusEffect(
+  useCallback(() => {
     getCurrentPosition()
     dispatch(getStories(Location))
     dispatch(getPostByCity(Location))
-  }, [Location]);
+  }, [Location])
+  );
   LocationIQ.reverse(lat, long)
     .then(json => {
       var address = json.address.city;

@@ -5,17 +5,23 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-// import {BASE_URL} from '@env'
+import {BASE_URL} from '@env'
+import axios from 'axios';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import CommentCompo from '../../../components/Home/CommentCompo';
 import io from 'socket.io-client';
 var socket, selectedChatCompare;
 
-const Comments = () => {
-  const [comment, setComment] = useState([]);
+const Comments = ({route}) => {
+  const {id,comments} = route.params
+  const scrollViewRef = useRef()
+  const [comment, setComment] = useState(comments);
+  const postState = useSelector((state)=>state.postState)
   const [loading, setLoading] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [socketConnected, setSocketConnected] = useState(false);
@@ -23,51 +29,28 @@ const Comments = () => {
   const [istyping, setIsTyping] = useState(false);
   const authState = useSelector(state => state.authState);
   const [modalVisible, setModalVisible] = useState(false);
-  const getCommentByPostId = async () => {
-    try {
-      setLoading(true);
-      console.log('id', id);
-      const response = await axios.get(
-        BASE_URL + `/api/post-comment/post/${id}`,
-      );
-      console.log('yo yo', response.data);
-      setComment(response.data);
-      setLoading(false);
-
-      socket.emit('join chat', authState.userId);
-    } catch (error) {
-      console.log('err', error.message);
-      Alert.alert('error');
-    }
-  };
-  // useEffect(() => {
-  //   // socket = io(BASE_URL);
-  //   socket.emit('setup', authState);
-  //   socket.on('connected', () => setSocketConnected(true));
-  //   socket.on('typing', () => setIsTyping(true));
-  //   socket.on('stop typing', () => setIsTyping(false));
-  // }, []);
-  // useEffect(() => {
-  //   // getCommentByPostId();
-  //   selectedChatCompare = authState;
-  // }, [authState.userId]);
-  // useEffect(() => {
-  //   console.log('new msg', selectedChatCompare);
-  //   socket.on('message recieved', newMessageRecieved => {
-  //     setComment([...comment, newMessageRecieved]);
-  //     console.log('new msg', newMessageRecieved);
-  //     console.log('new msg inside ', newMessageRecieved);
-  //   });
-  // }, []);
-  var userId = authState.userId;
+  useEffect(() => {
+    socket = io(BASE_URL)
+    socket.emit('setup', authState);
+    socket.on('connected', () => setSocketConnected(true));
+    socket.on('typing', () => setIsTyping(true));
+    socket.on('stop typing', () => setIsTyping(false));
+  }, [authState,BASE_URL]);
+  useEffect(() => {
+    selectedChatCompare = authState;
+  }, [authState]);
+  useEffect(() => {
+    socket.on('message recieved', newMessageRecieved => {
+      setComment([...comment, newMessageRecieved]);
+    });
+  }, [comment]);
   const typingHandler = event => {
     setNewComment(event);
-    console.log(event);
     if (!socketConnected) return;
 
     if (!typing) {
       setTyping(true);
-      socket.emit('typing', authState.userId);
+      socket.emit('typing', authState.id);
     }
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
@@ -75,72 +58,78 @@ const Comments = () => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
-        socket.emit('stop typing', authState.userId);
+        socket.emit('stop typing', authState.id);
         setTyping(false);
       }
     }, timerLength);
   };
   var commentData = {
     name: authState.name,
-    // lastName: user.lastName,
-    userId: authState.userId,
+    _id: authState.id,
   };
-  const sendMessage = async event => {
+  const sendMessage = async id => {
     if (newComment) {
-      socket.emit('stop typing', authState.userId);
+      setLoading(true)
+      socket.emit('stop typing', authState.id);
       try {
-        setNewComment('');
-        console.log('cu', id);
         await axios
-          .post(BASE_URL + `/api/post-comment`, {
-            postId: id,
-            userId: authState.userId,
-            comment: newComment,
+          .put(BASE_URL + `/api/post/${id}/user/${authState.id}/comment`, {
+            content: newComment,
           })
           .then(async response => {
             if (response.status == 200) {
-              await socket.emit('comment', {
-                userId: userId,
+              await socket.emit('comments', {
                 comment: newComment,
-                users: commentData,
+                user: commentData,
               });
-              console.log('comment log', response.data);
-              setComment([...comment, response.data]);
+              // console.log('comment log', response.data.comments);
+              setComment(response.data.comments);
+              setNewComment('')
+              setLoading(false)
             }
           });
-      } catch (error) {
-        console.log(
-          'error at send message',
-          error.response.data.msg,
-          error.response,
-        );
-        Alert.alert('error of send message');
-      }
-    }
-  };
+        } catch (error) {
+          console.log(
+            'error at send message',
+            // error.response.data.msg,
+            error.message,
+            );
+            
+            Alert.alert('error of send message');
+          }
+        }
+      };
+      
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {/* {comment.map(item => {
+       <OrientationLoadingOverlay
+        visible={loading}
+        color="white"
+        indicatorSize="large"
+        messageFontSize={24}
+      />
+      <ScrollView  ref={scrollViewRef}
+    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
+        <View style={{marginBottom:'15%'}}>
+        {comment.map(item => {
           return (
-            <> */}
               <CommentCompo
-                send={1}
+                send={item?.user?._id?item?.user?._id:item.user}
                 pic={{
                   uri:
-                    // item?.users.profilePicture == ''
-                    //   ?
+                    item?.user?.profilePicture===undefined
+                      ?
                        'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
-                      // : item?.users.profilePicture,
+                      : item?.user?.profilePicture,
                 }}
-                // username={item.users.name}
-                username={'Andalib'}
-                // message={item.comment}
-                message='Hello brother'
+                username={item?.user?.name?item?.user?.name:authState.name}
+                // username={'Andalib'}
+                message={item?.content?item?.content:'waps try kro'}
+                // message='Hello brother'
               />
-            {/* </>
-          );
-        })} */}
+              );
+            })}
+            </View>
       </ScrollView>
       <View style={styles.inputView}>
         <TextInput
@@ -151,7 +140,7 @@ const Comments = () => {
           onChangeText={e => typingHandler(e)}
           // onKeyPress={sendMessage}
         />
-        <TouchableOpacity style={styles.postButton}>
+        <TouchableOpacity style={styles.postButton} onPress={()=>sendMessage(id)}>
           <Text style={styles.postButtonText}>Post</Text>
         </TouchableOpacity>
       </View>
