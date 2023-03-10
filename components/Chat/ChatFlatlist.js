@@ -7,7 +7,7 @@ const ChatFlatlist = ({data}) => {
   const navigation  = useNavigation()
   return (
     <>
-    <TouchableOpacity style={styles.conatiner} onPress={()=>{navigation.navigate('ChatDetails',{data:data})}}>
+    <TouchableOpacity style={styles.conatiner} onPress={()=>{navigation.navigate('ChatDetails',{data:data.messages.map((i)=>i),group:data})}}>
       <View style={styles.innerView}>
         <Image source={{uri: data?.placeImg?data?.placeImage:'https://st3.depositphotos.com/9987990/16313/i/600/depositphotos_163131326-stock-photo-local-seo-marketing-banner-icon.jpg'}} style={styles.placeImage} />
         <View style={styles.chatDatailsView}>

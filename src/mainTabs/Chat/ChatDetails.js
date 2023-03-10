@@ -1,12 +1,14 @@
 import { ScrollView, StyleSheet, Text, TextInput, Image, TouchableOpacity, Alert, View, Dimensions } from 'react-native';
-import React,{useState} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import ChatInnerItem from '../../../components/Chat/ChatInnerItem';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client'
 import moment from 'moment';
+import {BASE_URL} from '@env'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 var socket, selectedChatCompare;
 import StackHeader from '../../../components/StackHeader';
@@ -14,12 +16,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const ChatDetails = ({route}) => {
   const navigation=useNavigation()
-  const {data} = route.params;
-  const chatState = useSelector((state) => state.chatState)
-  const dispatch = useDispatch()
+  const {data,group} = route.params;
+  const scrollViewRef = useRef()
   const authState = useSelector((state)=> state.authState)
   const [video, setVideo] = useState('')
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(data);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
@@ -38,190 +39,93 @@ const ChatDetails = ({route}) => {
     }).then(img => {
       console.log(img);
       setVideo(img);
-      // sendMessage(video);
+      sendMessage(img);
     });
 
   }
 
-// let g = group.users.map((i)=>i.userId)
-// const itemToRemove = authId
-// const originalArray = g
-// const newArray = originalArray.filter(item => item !== itemToRemove)
+  useEffect(() => {
+    socket = io(BASE_URL);
+    socket.emit("setup", authState);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, [authState,BASE_URL]);
+  useEffect(() => {
+    selectedChatCompare = authState;
+  }, [authState]);
+  useEffect(() => {
+    socket.on('message recieved', newMessageRecieved => {
+      setMessages([...messages, newMessageRecieved]);
+    });
+  }, [messages]);
+  const typingHandler = (event) => {
+    setNewMessage(event);
+    console.log(event)
+  };
+  const sendMessage = async (video) => {
+    if (newMessage) {
+      socket.emit("stop typing", group._id);
+      setLoading(true)
+      try {
+        await axios.post(
+          BASE_URL +
+          `/api/groupChats/${group._id}/user/${authState.id}/message`,
+          {
+           text:newMessage
+          },
+        ).then(async (response) => {
+          if (response.status == 201) {
+            await socket.emit("new message", response.data);
+            setMessages([...messages,response.data]);
+            setLoading(false)
+            setNewMessage('')
+          }
+        })
 
-  const getMessagesByChatId = async () => {
-    // if (!selectedChat) return;
 
-    try {
-
-      setLoading(true);
-      const response = await axios.get(
-       BASE_URL +
-        `/api/message/chat/${group.chatId}?userId=${authId}`,
-      );
-      // console.log("res", response.data)
-      setMessages(response.data);
-      setLoading(false);
-
-      socket.emit("join chat", group.chatId);
-    } catch (error) {
-      console.log("err", error.message)
-      Alert.alert("error")
+      } catch (error) {
+        console.log("error at send message", error.response.status)
+        Alert.alert("error of send message",error.message)
+      }
     }
   };
-  // useEffect(() => {
-  //   socket = io(BASE_URL);
-  //   socket.emit("setup", authState);
-  //   socket.on("connected", () => setSocketConnected(true));
-  //   socket.on("typing", () => setIsTyping(true));
-  //   socket.on("stop typing", () => setIsTyping(false));
-  // }, []);
-  // useEffect(() => {
-  //   dispatch(getGroupDetailsbyChatId(group.chatId));
-  // }, [dispatch,group.chatId]);
-  // useEffect(() => {
-  //   getMessagesByChatId()
-  // }, [group.chatId])
-  // useEffect(() => {
-  //   socket.on("message recieved", (newMessageRecieved) => {
-  //     if (
-  //       !selectedChatCompare || // if chat is not selected or doesn't match current chat
-  //       selectedChatCompare.chatId !== newMessageRecieved.chatId
-  //     ) {
-  //       if (!notification.includes(newMessageRecieved)) {
-  //         setNotification([newMessageRecieved, ...notification]);
-  //         setFetchAgain(!fetchAgain);
-  //       }
-  //     }
-  //     else {
-  //       setMessages([...messages, newMessageRecieved]);
-  //     }
-  //   });
-  // }, []);
-  // const typingHandler = (event) => {
-  //   setNewMessage(event);
-  //   console.log(event)
-  //   if (!socketConnected) return;
-
-  //   if (!typing) {
-  //     setTyping(true);
-  //     socket.emit("typing", group.chatId);
-  //   }
-  //   let lastTypingTime = new Date().getTime();
-  //   var timerLength = 3000;
-  //   setTimeout(() => {
-  //     var timeNow = new Date().getTime();
-  //     var timeDiff = timeNow - lastTypingTime;
-  //     if (timeDiff >= timerLength && typing) {
-  //       socket.emit("stop typing", group.chatId);
-  //       setTyping(false);
-  //     }
-  //   }, timerLength);
-  // };
-  // const sendMessage = async (video) => {
-  //   if (newMessage) {
-  //     socket.emit("stop typing", group.chatId);
-  //     try {
-  //       // console.log('send to group', newArray);
-  //       setNewMessage("");
-  //       await axios.post(
-  //         BASE_URL +
-  //         `/api/message/chat/${group.chatId}/user/${authId}`,
-  //         {
-  //           content: newMessage,
-  //           createdAt: moment().toISOString(),
-  //           // firstName: user.firstName,
-  //           // lastName: user.lastName,
-  //           name: authState.name,
-  //           profilePicture: authState.profilePicture,
-  //           sentTo:newArray
-  //         },
-  //       ).then(async (response) => {
-  //         if (response.status == 200) {
-  //           // console.log("re", messages)
-  //           // console.log(response.data)
-  //           await socket.emit("new message", response.data);
-
-  //           // await messages.push(response.data)
-  //           setMessages([...messages, response.data]);
-
-  //         }
-  //       })
-
-
-  //     } catch (error) {
-  //       console.log("error at send message", error.response.status)
-  //       Alert.alert("error of send message")
-  //     }
-  //   }
-  //   else if (video) {
-  //     // socket.emit('stop typing', group.chatId);
-  //     // console.log("before try")
-  //     try {
-  //       // console.log('form data',formData);
-  //       setNewMessage('');
-  //       const formData = new FormData();
-  //       // video.forEach((item, i) => {
-  //       formData.append('content', {
-  //         uri: video.path,
-  //         type: video.mime,
-  //         name: video.filename || `filename${video.size}.${video.path.slice(-3)}`,
-  //       });
-  //       // });
-  //       formData.append('createdAt', moment().toISOString())
-  //       formData.append('profilePicture', authState.profilePicture)
-  //       formData.append('name', authState.name)
-  //       newArray.forEach(
-  //         newArray => formData.append('sentTo[]', newArray)
-  //         )
-  //       // formData.append('lastName', user.lastName)
-  //       await axios
-  //         .post(BASE_URL + `/api/message/chat/${group.chatId}/user/${authId}`,
-  //           formData,
-  //           {
-  //             headers: {
-  //               Accept: 'application/json',
-  //               'Content-Type': 'multipart/form-data'
-  //             }
-  //           }
-  //         )
-  //         .then(async response => {
-  //           // console.log("res", response)
-  //           if (response.status == 200) {
-  //             // console.log("re", messages)
-  //             // console.log("video res",response.data);
-  //             await socket.emit('new message', response.data);
-
-  //             // await messages.push(response.data)
-  //             setMessages([...messages, response.data]);
-  //           }
-  //         });
-  //     } catch (error) {
-  //       console.log('error at send message', error);
-  //       Alert.alert('error of send message');
-  //     }
-  //   }
-  // };
   return (
     <View style={styles.container}>
+       <OrientationLoadingOverlay
+        visible={loading}
+        color="white"
+        indicatorSize="large"
+        messageFontSize={24}
+      />
       <StackHeader
         headerImage={true}
         headerIcon={true}
-        headerName={data.name}
+        headerName={group?.name}
         rightIcon={false}
       />
-      <ScrollView>
-        {/* {messages.map(item => {
-          return ( */}
+      <ScrollView 
+      ref={scrollViewRef}
+      onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+      >
+        <View style={{marginBottom:'15%'}}> 
+        {messages.map(item => {
+          return (
             <ChatInnerItem
               navigation={navigation}
-              send={1}
-              pic={'https://assets.telegraphindia.com/telegraph/2021/Jun/1622577021_02metmall_4col.jpg'}
-              username={'Andalib'}
-              message={'hey bro'}
-              time={moment().format("hh:mm a")}
+              send={item?.sender?._id?item?.sender._id:item?.sender}
+              pic={
+                item?.sender?.profilePicture===undefined
+                  ?
+                   'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
+                  : item?.user?.profilePicture}
+              username={item?.sender?.name?item?.sender?.name:authState.name}
+              message={item?.text}
+              time={moment(item?.timestamp).format("hh:mm a")}
             />
-          {/* );
-        })} */}
+           );
+        })} 
+        </View>
       </ScrollView>
       <View>
         <View style={styles.inputView}>
@@ -229,16 +133,19 @@ const ChatDetails = ({route}) => {
             placeholderTextColor='#000'
             placeholder='Type here'
             value={newMessage}
-            onChangeText={(e) => setNewMessage(e)}
-            // onChangeText={(e) => typingHandler(e)}
+            // onChangeText={(e) => setNewMessage(e)}
+            onChangeText={(e) => typingHandler(e)}
             // onSubmitEditing={sendMessage}
           />
-          <TouchableOpacity style={styles.emoticon} onPress={() => launchCameraPhoto()}>
+          {/* <TouchableOpacity style={styles.emoticon} onPress={() => launchCameraPhoto()}>
             <MaterialIcons
               name='add-a-photo' size={24} color={'#000'}
-              style={{ height: 27, width: 27, marginTop: '19%', marginLeft: '7%', }}
+              style={{ height: 27, width: 27, marginLeft: '1%', }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <TouchableOpacity style={styles.postButton} onPress={()=>sendMessage()}>
+          <Text style={styles.postButtonText}>send</Text>
+        </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -256,7 +163,7 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     borderRadius: 20,
-    width: windowWidth / 1.33,
+    width: windowWidth / 1.4,
     marginLeft: '3%',
     marginBottom: '3%',
     marginTop: '3%',
@@ -276,4 +183,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#EDF0FE',
     position: 'absolute',
   },
+  emoticon: {
+    // marginLeft: '1%',
+    // marginTop: '3%',
+    width: 26,
+    height: 26,
+    alignItems: 'flex-end',
+    alignSelf:'center',
+    justifyContent: 'flex-end',
+    borderRadius: 100 / 2,
+  },
+  postButton:{
+    alignSelf: 'center',
+    marginLeft:'2%'
+  },
+  postButtonText:{
+    fontSize:14,
+    color:'blue',
+    fontWeight:'600'
+  }
 });

@@ -17,7 +17,7 @@ const ChatInnerItem = props => {
   const navigation = props.navigation;
   const authState = useSelector((state)=>state.authState)
   // console.log(props.isSender,"ddd")
-  const authId = authState.userId
+  const authId = authState.id
   // const userId ="3ac1df80-5a6e-11ed-a871-7d8265a60df7"
 
   const [paused, setPaused] = useState(false);
@@ -26,12 +26,12 @@ const ChatInnerItem = props => {
 
   return (
     <View>
-      {props.send !== authId ?
+      {props.send === authId ?
         <>
           <View style={{ flexDirection: 'row', marginBottom: '1%' }}>
             <View style={{ flexDirection: 'column' }}>
               <View style={{
-                backgroundColor: props.message.includes('jpg') || props.message.includes('png')? '#dbdbdb' : '#fff',
+                backgroundColor:'#fff',
                 marginLeft: '18%',
                 marginTop: '5%',
                 height: 'auto',
@@ -44,10 +44,10 @@ const ChatInnerItem = props => {
                 borderBottomLeftRadius: 20,
               }} key={props.key2}>
                 <Text style={styles.senderUsername}>{props.username}</Text>
-                {props.message.includes('jpg') || props.message.includes('png') || props.message.includes('jpeg')?
+                {props?.message?.includes('jpg') || props?.message?.includes('png') || props?.message?.includes('jpeg')?
                   // ?
                   <View>
-                    <Image source={{ uri: props.message ==''? null:props.message }} style={{
+                    <Image source={{ uri: props?.message ==''? null:props?.message }} style={{
                       height: windowHeight / 4, width: windowWidth / 1.7, alignSelf: 'flex-start', margin: 10,
                       // borderTopEndRadius: 20,
                       borderTopRightRadius: 20,
@@ -58,9 +58,9 @@ const ChatInnerItem = props => {
                     }} />
                   </View> : null
                 }
-                {!props.message
-                  .includes('jpg') && !props.message
-                  .includes('jpeg') && !props.message.includes('png')?
+                {!props?.message
+                  ?.includes('jpg') && !props?.message
+                  ?.includes('jpeg') && !props?.message?.includes('png')?
                   <View>
                     <Text style={styles.senderMessage}>{props.message}</Text>
                   </View> : null
@@ -88,7 +88,7 @@ const ChatInnerItem = props => {
             </View>
             <View style={{ flexDirection: 'column' }}>
               <View style={{
-                backgroundColor: props.message.includes('jpg') || props.message.includes('png')|| props.message.includes('mp4') ||props.message.includes('jpeg')? '#fff' : '#dbdbdb',
+                backgroundColor: '#dbdbdb',
                 marginLeft: '2%',
                 marginTop: '3%',
                 padding: 5,
@@ -100,10 +100,10 @@ const ChatInnerItem = props => {
                 borderTopLeftRadius: 20,
               }} key={props.key1}>
                 <Text style={styles.receiverUsername}>{props.username}</Text>
-                {props.message.includes('jpg') || props.message.includes('png') ||props.message.includes('jpeg')?
+                {props?.message?.includes('jpg') || props?.message?.includes('png') ||props?.message?.includes('jpeg')?
                   // ?
                   <View>
-                    <Image source={{ uri: props.message==''?null:props.message }} style={{
+                    <Image source={{ uri: props?.message==''?null:props?.message }} style={{
                       height: windowHeight / 4, width: windowWidth / 1.7, alignSelf: 'flex-start', margin: 10,
                       borderTopRightRadius: 20,
                       padding: 5,
@@ -113,9 +113,9 @@ const ChatInnerItem = props => {
                     }} />
                   </View> : null
                 }
-                {!props.message
-                  .includes('jpg')&& !props.message
-                  .includes('jpeg') && !props.message.includes('png') ?
+                {!props?.message
+                  ?.includes('jpg')&& !props?.message
+                  ?.includes('jpeg') && !props?.message?.includes('png') ?
                   <View>
                     <Text style={styles.receiverMessage}>{props.message}</Text>
                   </View> : null

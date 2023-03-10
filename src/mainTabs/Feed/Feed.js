@@ -86,7 +86,6 @@ const Feed = () => {
       setLocation(address);
     })
     .catch(error => console.log(error));
-    console.log("authid", authState.id)
   return (
     <View style={styles.container}>
        <OrientationLoadingOverlay
@@ -98,11 +97,11 @@ const Feed = () => {
       <StackHeader
         headerImage={true}
         headerName="Feeds"
-        rightIcon={true}
-        filterName="plussquareo"
-        filterSize={26}
-        filterColor={'#fff'}
-        filterNavigation={() => {navigation.navigate('CreatePost')}}
+        // rightIcon={true}
+        // filterName="plussquareo"
+        // filterSize={26}
+        // filterColor={'#fff'}
+        // filterNavigation={() => {navigation.navigate('CreatePost')}}
       />
       <ScrollView>
       <View style={styles.storiesContainer}>

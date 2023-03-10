@@ -1,7 +1,9 @@
 import { FlatList, StyleSheet, Text, View,Dimensions,ScrollView } from 'react-native'
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState, useCallback} from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 import SearchBar from "react-native-dynamic-search-bar";
 import StackHeader from '../../../components/StackHeader'
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
 import ChatData from '../../../assets/MockData/ChatData'
 import ChatFlatlist from '../../../components/Chat/ChatFlatlist'
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,9 +15,11 @@ const Chat = () => {
   const authState = useSelector((state)=>state.authState)
   const [ searchText,setSearchText]=useState('')
   const [filteredData,setFilteredData]=useState(chatState.chats)
-  useEffect(()=>{
-     dispatch(getChatByUserId(authState.id))
-  },[authState.id])
+  useFocusEffect(
+    useCallback(()=>{
+      dispatch(getChatByUserId(authState.id))
+   },[authState.id])
+    );
   const search = (text) =>{
     if (text) {
       const newData = chatState.chats.filter(function (item) {
@@ -34,6 +38,12 @@ const Chat = () => {
   }
   return (
     <View style={styles.container}>
+      <OrientationLoadingOverlay
+        visible={chatState.loading}
+        color="white"
+        indicatorSize="large"
+        messageFontSize={24}
+      />
       <StackHeader
         headerName="Chat"
         rightIcon={false}
