@@ -103,7 +103,7 @@ export const postDislike = (postId,authId,city) => {
                 BASE_URL+`/api/post/${postId}/user/${authId}/dislike`
             );
             if (response) {
-                dispatch(like(response.data))
+                dispatch(dislike(response.data))
                 dispatch(getPostByCity(city))
             }
         } catch (err) {

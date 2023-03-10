@@ -28,7 +28,7 @@ const FeedsFlatlist = ({data, city}) => {
       dispatch(postLike(postId, authId, city));
     }
   };
-  const findId = postState.postCity[0]?.likes.map(i => i._id);
+  const findId = data.likes.map((i)=>i._id)
   return (
         <View style={styles.container}>
           <View style={styles.profileDetailsView}>
