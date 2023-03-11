@@ -143,7 +143,7 @@ export const createPostByUserId = (
       dispatch(reqPost());
       console.log("olol",  authId,
       description,
-     content,
+    //  content,
      city)
       try {
         const response = await axios.post(BASE_URL + `/api/post`, 

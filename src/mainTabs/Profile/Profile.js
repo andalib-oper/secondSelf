@@ -113,8 +113,8 @@ const Profile = () => {
             editable={false}
             style={styles.input}
             value={
-              profileState?.profileDetails?.location
-                ? profileState?.profileDetails?.location
+              profileState?.profileDetails?.city
+                ? profileState?.profileDetails?.city
                 : 'Not Specified'
             }
           />

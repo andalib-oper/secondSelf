@@ -114,7 +114,7 @@ const EditProfile = () => {
         res?.bio,
         res?.phoneNo,
         // Location?Location:res?.location,
-        res?.location==undefined?Location:res?.location,
+        res?.city==undefined?Location.toLowerCase():res?.city,
         res?.gender,
         res?.maritalStatus,
         res?.occupation,
@@ -225,7 +225,7 @@ const EditProfile = () => {
             style={styles.locationInput}
             onPress={() => getCurrentPosition()}>
             <Text style={styles.locationText}>
-              {res?.location === undefined ? 'Not specified' : res?.location!= undefined?res?.location:Location}
+              {Location}
             </Text>
           </TouchableOpacity>
         </View>

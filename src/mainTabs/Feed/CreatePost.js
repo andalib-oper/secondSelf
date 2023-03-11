@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  Alert,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import React, {useState} from 'react';
@@ -53,7 +54,7 @@ const CreatePost = ({navigation}) => {
             value={Location}
             onChangeText={text => setLocation(text)}
             keyboardType={'default'}
-            placeholder="PLace You want to visit"
+            placeholder="PLace You have visited"
             placeholderTextColor={'grey'}
           />
         </View>
@@ -96,7 +97,10 @@ const CreatePost = ({navigation}) => {
         {/* create button */}
         <TouchableOpacity
           onPress={() => {
-            onSubmit();
+            Location&&text&&contentPic?
+            onSubmit()
+            :
+            Alert.alert("Please fill the input properly")
           }}
           style={styles.createActivityButton}>
           <Text style={styles.createActivityText}>Create Activity</Text>

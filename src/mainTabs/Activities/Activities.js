@@ -125,9 +125,9 @@ const Activities = ({navigation}) => {
       </View>
       <View style={styles.tabContainer}>
         <ScrollView>
-        {index === 0 && <Ongoing city={Location}/>}
-        {index === 1 && <Upcoming join={upcoming} city={Location}/>}
-        {index === 2 && <Completed city={Location}/>}
+        {index === 0 && <Ongoing city={Location.toLowerCase()}/>}
+        {index === 1 && <Upcoming join={upcoming} city={Location.toLowerCase()}/>}
+        {index === 2 && <Completed city={Location.toLowerCase()}/>}
         </ScrollView>
       </View>
     </View>
