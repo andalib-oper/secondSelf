@@ -12,6 +12,7 @@ const initialState = {
   activityUpcoming:[],
   activityCompleted:[],
   activity:[],
+  activityUserId:[],
   joinUser:[],
   loading:false,
   error:''
@@ -35,14 +36,14 @@ const ActivityReducer = (state = initialState, action) => {
     case GET_ACTIVITY_BY_USERID: {
       return {
         ...state,
-        activity: action.data,
+        activityUserId: action.data,
         loading: false,
       };
     }
     case GET_ACTIVITY_BY_CITY: {
       let date = moment().format('YYYY-MM-DD')
       let time = new Date().toLocaleTimeString()
-      let arr = action.data.filter((i)=>i.date===date)
+      let arr = action.data
       let arr1 =action.data.filter((i)=>i.date>=date)
       let arr2=action.data.filter((i)=>i.date<date )
       return {

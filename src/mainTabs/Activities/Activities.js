@@ -8,7 +8,8 @@ import StackHeader from '../../../components/StackHeader';
 import Ongoing from './Ongoing';
 import Upcoming from './Upcoming';
 import Completed from './Completed';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getActivityByCity } from '../../../redux/Activity/actions';
 
 
 const requestLocationPermission = async () => {
@@ -38,6 +39,7 @@ const requestLocationPermission = async () => {
 
 const Activities = ({navigation}) => {
   const [index, setIndex] = useState(0);
+  const dispatch = useDispatch()
   const activityState=useSelector((state)=>state.activityState)
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
@@ -65,7 +67,8 @@ const Activities = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       getCurrentPosition()
-    }, [])
+      dispatch(getActivityByCity(Location))
+    }, [Location])
     );
   LocationIQ.reverse(lat, long)
   .then(json => {

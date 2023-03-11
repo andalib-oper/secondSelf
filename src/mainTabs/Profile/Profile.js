@@ -9,11 +9,11 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect,useCallback} from 'react';
 import FeedsData from '../../../assets/MockData/FeedsData';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
 import StackHeader from '../../../components/StackHeader';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import ProfileInput from '../../../components/Profile/ProfileInput';
 import {useDispatch, useSelector} from 'react-redux';
 import {logUserOut} from '../../../redux/auth/action';
@@ -29,11 +29,13 @@ const Profile = () => {
   const postState = useSelector(state => state.postState);
   const activityState = useSelector((state)=>state.activityState)
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getProfileDetailsByUserId(authState.id));
-    dispatch(getActivityByUserId(authState.id))
-    dispatch(getPostByUserId(authState.id));
-  }, [authState.id]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getProfileDetailsByUserId(authState.id));
+      dispatch(getActivityByUserId(authState.id))
+      dispatch(getPostByUserId(authState.id));
+    }, [authState.id])
+    );
   return (
     <View style={styles.container}>
       <StackHeader headerName="Profile" rightIcon={false} />
@@ -160,7 +162,7 @@ const Profile = () => {
         <View style={styles.feedView}>
           <FlatList
             style={styles.flatlist}
-            data={activityState.activity}
+            data={activityState.activityUserId}
             renderItem={({item}) => <ActivityFlatlist data={item} />}
             keyExtractor={item => item._id}
           />
