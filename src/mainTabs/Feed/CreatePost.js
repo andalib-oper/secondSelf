@@ -12,6 +12,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
+import ImgToBase64 from 'react-native-image-base64';
 import {useDispatch, useSelector} from 'react-redux';
 import {createPostByUserId} from '../../../redux/Post/actions';
 
@@ -26,12 +27,15 @@ const CreatePost = ({navigation}) => {
     ImagePicker.openPicker({
       multiple: false,
     }).then(image => {
-      setContentPic(image.path);
+      // setContentPic(image.path);
       setContent(image);
+      ImgToBase64.getBase64String(image.path)
+      .then(base64String => setContentPic(`data:image/jpeg;base64,${base64String}`))
+      .catch(err => console.log(err));
     });
   };
   const onSubmit = () => {
-    dispatch(createPostByUserId(authState?.id, text, content, Location));
+    dispatch(createPostByUserId(authState?.id, text, contentPic, Location));
     setLocation('');
     setText('');
     setContent('');

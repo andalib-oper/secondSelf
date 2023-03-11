@@ -74,7 +74,7 @@ const ChatInnerItem = props => {
             <View style={styles.messageImageRight}>
               <Image
                 style={{ height: 35, width: 35, borderRadius: 100 / 2, alignSelf: 'center', marginTop: '5%', justifyContent:'center', alignItems:'center'}}
-                source={{uri:props.pic==''?'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg':props.pic }} />
+                source={{uri:props.pic==undefined?'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg':props.pic }} />
             </View>
           </View>
         </>
@@ -84,7 +84,7 @@ const ChatInnerItem = props => {
             <View style={styles.messageImage}>
               <Image
                 style={{ height: 35, width: 35, borderRadius: 100 / 2 }}
-                source={{uri:props.pic==''?'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg':props.pic}} />
+                source={{uri:props.pic==undefined?'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg':props.pic}} />
             </View>
             <View style={{ flexDirection: 'column' }}>
               <View style={{

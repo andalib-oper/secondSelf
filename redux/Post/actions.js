@@ -146,22 +146,12 @@ export const createPostByUserId = (
      content,
      city)
       try {
-        const formData = new FormData();
-      formData.append('content',{
-        uri: content.path,
-        type: content.type,
-        name: content.filename || `filename${content.size}.jpg`,
-      })
-      / formData.append('description', description)
-      formData.append('city', city)
-      formData.append('userId', authId)
         const response = await axios.post(BASE_URL + `/api/post`, 
-         formData,
         {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'multipart/form-data'
-          }
+          content: content,
+          description:description,
+          city:city,
+          userId:authId
         }
     );
         if (response) {

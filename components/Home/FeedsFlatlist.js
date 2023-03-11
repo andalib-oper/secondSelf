@@ -34,7 +34,7 @@ const FeedsFlatlist = ({data, city}) => {
           <View style={styles.profileDetailsView}>
             <Image
               style={styles.profileImage}
-              source={{uri: data?.userId?.profilePicture}}
+              source={{uri: data?.userId?.profilePicture?data?.userId?.profilePicture:'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'}}
             />
             <View style={{alignSelf: 'center'}}>
               <Text style={styles.profileName}>{data?.userId?.name}</Text>

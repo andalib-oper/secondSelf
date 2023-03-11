@@ -3,14 +3,14 @@ import React, {useEffect,useState} from 'react';
 import ActivityFlatlist from '../../../components/Activity/ActivityFlatlist';
 import ActivitiesData from '../../../assets/MockData/ActivitiesData';
 import {useDispatch, useSelector} from 'react-redux';
-import {getActivityByUserId} from '../../../redux/Activity/actions';
+import {getActivityByCity} from '../../../redux/Activity/actions';
 
-const Ongoing = () => {
+const Ongoing = ({city}) => {
   const dispatch = useDispatch();
   const authState = useSelector((state)=>state.authState)
   const activityState = useSelector((state)=>state.activityState)
   useEffect(() => {
-    dispatch(getActivityByUserId(authState.id))
+    dispatch(getActivityByCity(city))
   }, [authState.id]);
   return (
     <View style={styles.container}>

@@ -47,7 +47,8 @@ const ActivityFlatlist = ({data, join}) => {
               ? [styles.activityDetails, {width: '55%'}]
               : [styles.activityDetails]
           }>
-          <Text style={styles.activityText}>Location: {data?.location}</Text>
+          <Text style={styles.activityText}>Place: {data?.place}</Text>
+          <Text style={styles.activityText}>City: {data?.city}</Text>
           <Text
             style={styles.activityText}
             ellipsizeMode={'tail'}

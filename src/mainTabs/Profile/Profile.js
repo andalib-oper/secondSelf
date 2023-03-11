@@ -162,7 +162,19 @@ const Profile = () => {
             style={styles.flatlist}
             data={activityState.activity}
             renderItem={({item}) => <ActivityFlatlist data={item} />}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item._id}
+          />
+        </View>
+{/* post flatlist section */}
+        <View style={styles.profileView}>
+          <Text style={styles.profileHeader}>Your Posts</Text>
+        </View>
+        <View style={styles.feedView}>
+          <FlatList
+            style={styles.flatlist}
+            data={postState.postUserId}
+            renderItem={({item}) => <FeedsFlatlist data={item} />}
+            keyExtractor={item => item._id}
           />
         </View>
       </ScrollView>

@@ -181,7 +181,7 @@ const LoginRegCompo = ({data}) => {
           <TouchableOpacity
             style={styles.loginButton}
             onPress={() => {
-              setReg(false), onSubmitHandlerReg();
+              onSubmitHandlerReg();
             }}>
             <Text style={styles.loginButtonText}>Continue</Text>
           </TouchableOpacity>
