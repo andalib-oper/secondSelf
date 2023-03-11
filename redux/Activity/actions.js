@@ -107,7 +107,7 @@ export const getActivityByUserId = authId => {
   };
 };
 
-export const joinUsersInActivity = (activityId, authId) => {
+export const joinUsersInActivity = (activityId, authId,city) => {
   return async dispatch => {
     dispatch(reqActivity());
     console.log('act', activityId);
@@ -120,7 +120,7 @@ export const joinUsersInActivity = (activityId, authId) => {
       );
       if (response) {
         dispatch(joinUser(response.data));
-        dispatch(getActivityByUserId(authId));
+        dispatch(getActivityByCity(city));
         console.log('joining', response.data);
       }
     } catch (err) {

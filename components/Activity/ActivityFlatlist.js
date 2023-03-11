@@ -12,18 +12,23 @@ import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {joinUsersInActivity} from '../../redux/Activity/actions';
-import { joinUsersInGroup } from '../../redux/Chat/actions';
+import {joinUsersInGroup} from '../../redux/Chat/actions';
 
-const ActivityFlatlist = ({data, join}) => {
+const ActivityFlatlist = ({data, join,city}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const authState = useSelector(state => state.authState);
-  const chatState = useSelector((state)=>state.chatState)
-  const joinGroup = (id,name) => {
-    let v =chatState.chats.filter((i)=>i?.name==name)
-    dispatch(joinUsersInActivity(id, authState.id));
-    dispatch(joinUsersInGroup(v[0]?._id,authState.id))
+  const chatState = useSelector(state => state.chatState);
+  const activityState = useSelector(state => state.activityState);
+  const joinGroup = (id, name) => {
+    let v = chatState.chats.filter(i => i?.name == name);
+    console.log("v",v)
+    dispatch(joinUsersInActivity(id, authState.id,city));
+    dispatch(joinUsersInGroup(v[0]?._id, authState.id));
   };
+  let c = data?.participants.map(i => i._id);
+  // console.log("authid", activityState.)
+  // console.log("data?.",data?.place,c.includes(authState.id))
   return (
     <TouchableOpacity
       style={styles.container}
@@ -63,14 +68,15 @@ const ActivityFlatlist = ({data, join}) => {
         <View style={{alignSelf: 'center'}}>
           {join ? (
             <>
-              {
-                data?.organizer?._id===authState.id
-              ? null 
-              : (
-                <JoiningActCompo
-                  join={join}
-                  onPress={() => joinGroup(data?._id,data?.location)}
-                />
+              {data?.organizer?._id === authState.id ? null : (
+                <>
+                  {c.includes(authState.id) ? null : (
+                    <JoiningActCompo
+                      join={join}
+                      onPress={() => joinGroup(data?._id, data?.location)}
+                    />
+                  )}
+                </>
               )}
             </>
           ) : (
@@ -81,7 +87,14 @@ const ActivityFlatlist = ({data, join}) => {
                   {data?.participants.slice(0, 3).map(i => {
                     return (
                       <>
-                        <Image source={{uri: i.img?i.img:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}} style={styles.image} />
+                        <Image
+                          source={{
+                            uri: i.img
+                              ? i.img
+                              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                          }}
+                          style={styles.image}
+                        />
                       </>
                     );
                   })}
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
   },
   activityDetails: {
     width: '49%',
-    marginRight:'5%',
+    marginRight: '5%',
     alignSelf: 'flex-start',
   },
   activityText: {
