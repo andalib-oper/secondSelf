@@ -28,21 +28,19 @@ const CreatePost = ({navigation}) => {
     ImagePicker.openPicker({
       multiple: false,
     }).then(image => {
-      // setContentPic(image.path);
+      setContentPic(image.path);
       setContent(image);
-      ImgToBase64.getBase64String(image.path)
-      .then(base64String => setContentPic(`data:image/jpeg;base64,${base64String}`))
-      .catch(err => console.log(err));
     });
   };
   const onSubmit = () => {
-    dispatch(createPostByUserId(authState?.id, text, contentPic, Location));
+    dispatch(createPostByUserId(authState?.id, text, content, Location.toLowerCase()));
     setLocation('');
     setText('');
     setContent('');
     setContentPic('');
     navigation.goBack();
   };
+  console.log("text", Location)
   return (
     <View style={styles.container}>
       <ScrollView>

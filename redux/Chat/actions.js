@@ -79,6 +79,7 @@ export const createGroupByUserId = (
 export const joinUsersInGroup = (groupId,authId) => {
     return async dispatch => {
       dispatch(reqProfile());
+      console.log("grop",groupId,authId)
       try {
           const response = await axios.post(
             BASE_URL + `/api/groupChats/${groupId}/add-user`,

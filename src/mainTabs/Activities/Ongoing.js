@@ -15,6 +15,7 @@ const Ongoing = ({city}) => {
       dispatch(getActivityByCity(city))
     }, [city])
     );
+    console.log("act", activityState.activityActive)
   return (
     <View style={styles.container}>
       <FlatList
