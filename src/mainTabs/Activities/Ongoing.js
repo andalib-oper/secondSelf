@@ -20,7 +20,7 @@ const Ongoing = ({city}) => {
     <View style={styles.container}>
       <FlatList
         style={styles.flatlist}
-        data={activityState.activityActive}
+        data={activityState.activity}
         renderItem={({item}) => <ActivityFlatlist data={item} />}
         keyExtractor={item => item._id}
       />

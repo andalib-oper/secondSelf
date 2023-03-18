@@ -101,7 +101,7 @@ const CreatePost = ({navigation}) => {
             Alert.alert("Please fill the input properly")
           }}
           style={styles.createActivityButton}>
-          <Text style={styles.createActivityText}>Create Activity</Text>
+          <Text style={styles.createActivityText}>Create Post</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
