@@ -1,9 +1,9 @@
 import React from 'react';
-import Config from './src/config';
-import {Provider} from 'react-redux';
-import store from './redux/store';
-import './ignoreWarnings'
 import 'react-native-gesture-handler';
+import { Provider } from 'react-redux';
+import './ignoreWarnings';
+import store from './redux/store';
+import Config from './src/config';
 
 const App = () => {
   return (

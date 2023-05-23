@@ -1,22 +1,21 @@
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
+  Dimensions,
+  ImageBackground,
+  PermissionsAndroid,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  Dimensions,
-  Image,
-  ImageBackground,
-  ScrollView,
   TouchableOpacity,
-  PermissionsAndroid,
+  View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
+import ImagePicker from 'react-native-image-crop-picker';
 import LocationIQ from 'react-native-locationiq';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ImagePicker from 'react-native-image-crop-picker';
-import ProfileInput from '../../../components/Profile/ProfileInput';
 import {useDispatch, useSelector} from 'react-redux';
+import ProfileInput from '../../../components/Profile/ProfileInput';
 import {
   editProfileDetails,
   newCoverPicture,
@@ -71,15 +70,15 @@ const EditProfile = () => {
     ImagePicker.openPicker({
       multiple: false,
     }).then(image => {
-      if (profile=='profile') {
+      if (profile == 'profile') {
         setProfilePic(image.path);
         setProfilePicImages(image);
         dispatch(newProfilePicture(image, authState.id));
-      } else if (profile=='cover') {
+      } else if (profile == 'cover') {
         setCoverPic(image.path);
         setcoverPicImage(image);
         dispatch(newCoverPicture(image, authState.id));
-      } else if(profile=='doc') {
+      } else if (profile == 'doc') {
         setFileName(image?.path?.slice(-20));
         setImage(image);
         dispatch(uploadDoc(image, authState.id));
@@ -114,13 +113,13 @@ const EditProfile = () => {
         res?.bio,
         res?.phoneNo,
         // Location?Location:res?.location,
-        res?.city==undefined?Location.toLowerCase():res?.city,
+        res?.city == undefined ? Location.toLowerCase() : res?.city,
         res?.gender,
         res?.maritalStatus,
         res?.occupation,
         // interest !== [] ? interest : res?.interest,
-        res?.interest==[]?interest:res.interest,
-        res?.links==[]?links:res.links,
+        res?.interest == [] ? interest : res.interest,
+        res?.links == [] ? links : res.links,
         // links !== [] ? links : res?.links,
       ),
     );
@@ -224,9 +223,7 @@ const EditProfile = () => {
           <TouchableOpacity
             style={styles.locationInput}
             onPress={() => getCurrentPosition()}>
-            <Text style={styles.locationText}>
-              {Location}
-            </Text>
+            <Text style={styles.locationText}>{Location}</Text>
           </TouchableOpacity>
         </View>
         {/* GENDER section */}
@@ -268,8 +265,14 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={res?.interest==[]?interest.toString():res?.interest.toString()}
-            onChangeText={e => handleChangeEdit('interest',e.split(','))}
+            value={
+              !res?.interest
+                ? interest
+                  ? interest.toString()
+                  : res?.interest.toString()
+                : res?.interest.toString()
+            }
+            onChangeText={e => handleChangeEdit('interest', e.split(','))}
             keyboardType={'default'}
           />
         </View>
@@ -279,8 +282,8 @@ const EditProfile = () => {
           <ProfileInput
             editable={true}
             style={styles.input}
-            value={links.toString()}
-            onChangeText={e => handleChangeEdit('links',e.split(','))}
+            value={links ? links.toString() : null}
+            onChangeText={e => handleChangeEdit('links', e.split(','))}
             keyboardType={'default'}
           />
         </View>

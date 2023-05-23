@@ -1,15 +1,15 @@
-import {
-  GET_ALL_POST_BY_CITY,
-  REQ_FAILURE_POST,
-  REQ_POST,
-  LIKE,
-  DISLIKE,
-  COMMENT,
-  GET_ALL_POST_BY_USERID,
-  CREATE_POST,
-} from './actionTypes';
 import {BASE_URL} from '@env';
 import axios from 'axios';
+import {
+  COMMENT,
+  CREATE_POST,
+  DISLIKE,
+  GET_ALL_POST_BY_CITY,
+  GET_ALL_POST_BY_USERID,
+  LIKE,
+  REQ_FAILURE_POST,
+  REQ_POST,
+} from './actionTypes';
 
 export const reqPost = () => ({
   type: REQ_POST,
@@ -55,9 +55,10 @@ export const getPostByCity = city => {
       const response = await axios.get(BASE_URL + `/api/post?city=kolkata`);
       if (response) {
         dispatch(postCity(response.data));
+        // console.log('postbycity', response.data);
       }
     } catch (err) {
-      console.log('request failed stories');
+      console.log('request failed post by city');
       console.log(err.message);
       dispatch(reqFailure(err.message));
     }
@@ -71,7 +72,7 @@ export const getPostByUserId = authId => {
       const response = await axios.get(BASE_URL + `/api/post/user/${authId}`);
       if (response) {
         dispatch(postUserId(response.data));
-        // console.log("res",response.data)
+        console.log('res', response.data);
       }
     } catch (err) {
       console.log('request failed user post');

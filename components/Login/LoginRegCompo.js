@@ -1,28 +1,24 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import LoginInput from './LoginInput';
-import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
-import ImagePicker from 'react-native-image-crop-picker';
-import {useDispatch, useSelector} from 'react-redux';
-import {logUserIn, uploadDoc} from '../../redux/auth/action';
-import {regUserUp} from '../../redux/auth/action';
-import {stateCleanup, blurFields, updateFields} from '../../redux/Login/action';
-import {passwordRegex2} from '../../constants/phoneRegex';
 import {useNavigation} from '@react-navigation/native';
-import {emailRegex} from '../../constants/phoneRegex';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+import {useDispatch, useSelector} from 'react-redux';
+import {emailRegex, passwordRegex2} from '../../constants/phoneRegex';
+import {blurFields, stateCleanup, updateFields} from '../../redux/Login/action';
+import {logUserIn, regUserUp} from '../../redux/auth/action';
 import {
   blurFieldsReg,
   stateCleanupReg,
   updateFieldsReg,
 } from '../../redux/register/actions';
+import LoginInput from './LoginInput';
 
 const LoginRegCompo = ({data}) => {
   const navigation = useNavigation();
@@ -81,7 +77,9 @@ const LoginRegCompo = ({data}) => {
       loginFormState.inputValidity.password
     ) {
       console.log('All fields validated');
-      await dispatch(logUserIn(loginFormState.inputValues));
+      await dispatch(logUserIn(loginFormState.inputValues)).then(res => {
+        console.log('ress', res);
+      });
       {
         authState.accessToken
           ? navigation.navigate('FeedStack')

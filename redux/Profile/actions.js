@@ -19,9 +19,9 @@ export const getProfileDetails = data => ({
 });
 
 export const editProfile = data => ({
-    type: EDIT_PROFILE,
-    data,
-  });
+  type: EDIT_PROFILE,
+  data,
+});
 
 export const profilePic = data => ({
   type: PROFILE_PIC,
@@ -47,6 +47,7 @@ export const getProfileDetailsByUserId = authId => {
       );
       if (response) {
         dispatch(getProfileDetails(response.data));
+        console.log('profile det', response.data);
       }
     } catch (err) {
       console.log('request failed stories');
@@ -78,7 +79,7 @@ export const newProfilePicture = (image, authId) => {
       );
       if (response) {
         dispatch(profilePic(response.data));
-        dispatch(getProfileDetailsByUserId(authId))
+        dispatch(getProfileDetailsByUserId(authId));
       }
     } catch (err) {
       console.log('request failed stories');
@@ -110,7 +111,7 @@ export const newCoverPicture = (image, authId) => {
       );
       if (response) {
         dispatch(coverPic(response.data));
-        dispatch(getProfileDetailsByUserId(authId))
+        dispatch(getProfileDetailsByUserId(authId));
       }
     } catch (err) {
       console.log('request failed stories');
@@ -121,42 +122,42 @@ export const newCoverPicture = (image, authId) => {
 };
 
 export const editProfileDetails = (
-    authId,
-    name,
-    bio,
-    phoneNo,
-    location,
-    gender,
-    maritalStatus,
-    work,
-    interest,
-    links
-    ) => {
-    return async dispatch => {
-      dispatch(reqProfile());
-      try {
-        const response = await axios.put(
-          BASE_URL + `/api/auth/user/${authId}/update`,
-          {
-            name:name,
-            bio:bio,
-            phoneNo: phoneNo,
-            city:location,
-            gender:gender,
-            maritalStatus:maritalStatus,
-            occupation:work,
-            interest: interest,
-            links:links
-          }
-        );
-        if (response) {
-          dispatch(editProfile(response.data));
-          dispatch(getProfileDetailsByUserId(authId))
-        }
-      } catch (err) {
-        console.log('request failed edit profile');
-        console.log(err.message);
-        dispatch(reqFailure(err.message));
+  authId,
+  name,
+  bio,
+  phoneNo,
+  location,
+  gender,
+  maritalStatus,
+  work,
+  interest,
+  links,
+) => {
+  return async dispatch => {
+    dispatch(reqProfile());
+    try {
+      const response = await axios.put(
+        BASE_URL + `/api/auth/user/${authId}/update`,
+        {
+          name: name,
+          bio: bio,
+          phoneNo: phoneNo,
+          city: location,
+          gender: gender,
+          maritalStatus: maritalStatus,
+          occupation: work,
+          interest: interest,
+          links: links,
+        },
+      );
+      if (response) {
+        dispatch(editProfile(response.data));
+        dispatch(getProfileDetailsByUserId(authId));
       }
-    };
+    } catch (err) {
+      console.log('request failed edit profile');
+      console.log(err.message);
+      dispatch(reqFailure(err.message));
+    }
   };
+};

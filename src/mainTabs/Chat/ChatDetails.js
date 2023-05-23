@@ -1,28 +1,35 @@
-import { ScrollView, StyleSheet, Text, TextInput, Image, TouchableOpacity, Alert, View, Dimensions } from 'react-native';
-import React,{useState,useEffect,useRef} from 'react';
-import ChatInnerItem from '../../../components/Chat/ChatInnerItem';
-import ImagePicker from 'react-native-image-crop-picker';
-import { useSelector } from 'react-redux';
-import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
+import {BASE_URL} from '@env';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import io from 'socket.io-client'
 import moment from 'moment';
-import {BASE_URL} from '@env'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-var socket, selectedChatCompare;
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Alert,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+import {useSelector} from 'react-redux';
+import io from 'socket.io-client';
+import ChatInnerItem from '../../../components/Chat/ChatInnerItem';
 import StackHeader from '../../../components/StackHeader';
-import { useNavigation } from '@react-navigation/native';
+var socket, selectedChatCompare;
 
 const ChatDetails = ({route}) => {
-  const navigation=useNavigation()
-  const {data,group} = route.params;
-  const scrollViewRef = useRef()
-  const authState = useSelector((state)=> state.authState)
-  const [video, setVideo] = useState('')
+  const navigation = useNavigation();
+  const {data, group} = route.params;
+  const scrollViewRef = useRef();
+  const authState = useSelector(state => state.authState);
+  const [video, setVideo] = useState('');
   const [messages, setMessages] = useState(data);
   const [loading, setLoading] = useState(false);
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
@@ -41,16 +48,15 @@ const ChatDetails = ({route}) => {
       setVideo(img);
       sendMessage(img);
     });
-
-  }
+  };
 
   useEffect(() => {
     socket = io(BASE_URL);
-    socket.emit("setup", authState);
-    socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
-    socket.on("stop typing", () => setIsTyping(false));
-  }, [authState,BASE_URL]);
+    socket.emit('setup', authState);
+    socket.on('connected', () => setSocketConnected(true));
+    socket.on('typing', () => setIsTyping(true));
+    socket.on('stop typing', () => setIsTyping(false));
+  }, [authState, BASE_URL]);
   useEffect(() => {
     selectedChatCompare = authState;
   }, [authState]);
@@ -59,40 +65,41 @@ const ChatDetails = ({route}) => {
       setMessages([...messages, newMessageRecieved]);
     });
   }, [messages]);
-  const typingHandler = (event) => {
+  const typingHandler = event => {
     setNewMessage(event);
-    console.log(event)
+    console.log(event);
   };
-  const sendMessage = async (video) => {
+  const sendMessage = async video => {
     if (newMessage) {
-      socket.emit("stop typing", group._id);
-      setLoading(true)
+      socket.emit('stop typing', group._id);
+      setLoading(true);
       try {
-        await axios.post(
-          BASE_URL +
-          `/api/groupChats/${group._id}/user/${authState.id}/message`,
-          {
-           text:newMessage
-          },
-        ).then(async (response) => {
-          if (response.status == 201) {
-            await socket.emit("new message", response.data);
-            setMessages([...messages,response.data]);
-            setLoading(false)
-            setNewMessage('')
-          }
-        })
-
-
+        await axios
+          .post(
+            BASE_URL +
+              `/api/groupChats/${group._id}/user/${authState.id}/message`,
+            {
+              text: newMessage,
+            },
+          )
+          .then(async response => {
+            if (response.status == 201) {
+              await socket.emit('new message', response.data);
+              setMessages([...messages, response.data]);
+              console.log('chatsssss', response.data);
+              setLoading(false);
+              setNewMessage('');
+            }
+          });
       } catch (error) {
-        console.log("error at send message", error.response.status)
-        Alert.alert("error of send message",error.message)
+        console.log('error at send message', error.response.status);
+        Alert.alert('error of send message', error.message);
       }
     }
   };
   return (
     <View style={styles.container}>
-       <OrientationLoadingOverlay
+      <OrientationLoadingOverlay
         visible={loading}
         color="white"
         indicatorSize="large"
@@ -104,37 +111,41 @@ const ChatDetails = ({route}) => {
         headerName={group?.name}
         rightIcon={false}
       />
-      <ScrollView 
-      ref={scrollViewRef}
-      onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-      >
-        <View style={{marginBottom:'15%'}}> 
-        {messages.map(item => {
-          return (
-            <ChatInnerItem
-              navigation={navigation}
-              send={item?.sender?._id?item?.sender._id:item?.sender}
-              pic={
-                item?.sender?.profilePicture===undefined
-                  ?
-                   'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
-                  : item?.user?.profilePicture}
-              username={item?.sender?.name?item?.sender?.name:authState.name}
-              message={item?.text}
-              time={moment(item?.timestamp).format("hh:mm a")}
-            />
-           );
-        })} 
+      <ScrollView
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }>
+        <View style={{marginBottom: '15%'}}>
+          {messages.map(item => {
+            return (
+              <ChatInnerItem
+                navigation={navigation}
+                send={item?.sender?._id ? item?.sender._id : item?.sender}
+                pic={
+                  item?.sender?.profilePicture === undefined
+                    ? 'https://i.pinimg.com/236x/38/aa/95/38aa95f88d5f0fc3fc0f691abfaeaf0c.jpg'
+                    : item?.user?.profilePicture
+                }
+                username={
+                  item?.sender?.name ? item?.sender?.name : authState.name
+                }
+                message={item?.text}
+                time={moment(item?.timestamp).format('hh:mm a')}
+              />
+            );
+          })}
         </View>
       </ScrollView>
       <View>
         <View style={styles.inputView}>
-          <TextInput style={styles.input}
-            placeholderTextColor='#000'
-            placeholder='Type here'
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#000"
+            placeholder="Type here"
             value={newMessage}
             // onChangeText={(e) => setNewMessage(e)}
-            onChangeText={(e) => typingHandler(e)}
+            onChangeText={e => typingHandler(e)}
             // onSubmitEditing={sendMessage}
           />
           {/* <TouchableOpacity style={styles.emoticon} onPress={() => launchCameraPhoto()}>
@@ -143,9 +154,11 @@ const ChatDetails = ({route}) => {
               style={{ height: 27, width: 27, marginLeft: '1%', }}
             />
           </TouchableOpacity> */}
-          <TouchableOpacity style={styles.postButton} onPress={()=>sendMessage()}>
-          <Text style={styles.postButtonText}>send</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.postButton}
+            onPress={() => sendMessage()}>
+            <Text style={styles.postButtonText}>send</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -189,17 +202,17 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     alignItems: 'flex-end',
-    alignSelf:'center',
+    alignSelf: 'center',
     justifyContent: 'flex-end',
     borderRadius: 100 / 2,
   },
-  postButton:{
+  postButton: {
     alignSelf: 'center',
-    marginLeft:'2%'
+    marginLeft: '2%',
   },
-  postButtonText:{
-    fontSize:14,
-    color:'blue',
-    fontWeight:'600'
-  }
+  postButtonText: {
+    fontSize: 14,
+    color: 'blue',
+    fontWeight: '600',
+  },
 });

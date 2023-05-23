@@ -1,25 +1,25 @@
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  ImageBackground,
   Dimensions,
   FlatList,
-  PermissionsAndroid
+  Image,
+  ImageBackground,
+  PermissionsAndroid,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React,{useState,useEffect,useCallback} from 'react';
-import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import LocationIQ from 'react-native-locationiq';
-import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay'
-import StackHeader from '../../../components/StackHeader';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+import {useDispatch, useSelector} from 'react-redux';
 import FeedsFlatlist from '../../../components/Home/FeedsFlatlist';
-import { useDispatch, useSelector } from 'react-redux';
-import { getStories } from '../../../redux/Feeds/actions';
-import { getPostByCity } from '../../../redux/Post/actions';
+import StackHeader from '../../../components/StackHeader';
+import {getStories} from '../../../redux/Feeds/actions';
+import {getPostByCity} from '../../../redux/Post/actions';
 
 const requestLocationPermission = async () => {
   try {
@@ -47,14 +47,14 @@ const requestLocationPermission = async () => {
 };
 
 const Feed = () => {
-  const authState = useSelector((state)=>state.authState)
-  const feedState = useSelector((state)=>state.feedState)
-  const postState = useSelector((state)=>state.postState)
+  const authState = useSelector(state => state.authState);
+  const feedState = useSelector(state => state.feedState);
+  const postState = useSelector(state => state.postState);
   const navigation = useNavigation();
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
   const [Location, setLocation] = useState('');
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   LocationIQ.init('pk.9258ab5f6e3604f3f0a08054a0b92c48');
   const getCurrentPosition = () => {
     const result = requestLocationPermission();
@@ -74,11 +74,11 @@ const Feed = () => {
     });
   };
   useFocusEffect(
-  useCallback(() => {
-    getCurrentPosition()
-    dispatch(getStories(Location))
-    dispatch(getPostByCity(Location))
-  }, [Location])
+    useCallback(() => {
+      getCurrentPosition();
+      dispatch(getStories(Location));
+      dispatch(getPostByCity(Location));
+    }, [Location]),
   );
   LocationIQ.reverse(lat, long)
     .then(json => {
@@ -86,10 +86,10 @@ const Feed = () => {
       setLocation(address);
     })
     .catch(error => console.log(error));
-    console.log("auth", authState.id)
+  console.log('auth', authState.id);
   return (
     <View style={styles.container}>
-       <OrientationLoadingOverlay
+      <OrientationLoadingOverlay
         visible={feedState.loading}
         color="white"
         indicatorSize="large"
@@ -102,44 +102,43 @@ const Feed = () => {
         filterName="plussquareo"
         filterSize={26}
         filterColor={'#fff'}
-        filterNavigation={() => {navigation.navigate('CreatePost')}}
+        filterNavigation={() => {
+          navigation.navigate('CreatePost');
+        }}
       />
       <ScrollView>
-      <View style={styles.storiesContainer}>
-        <Text style={styles.storiesText}>Stories</Text>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-          <View style={styles.storiesView}>
-            {feedState?.stories?.map(i => {
-              let arr=[]
-              arr.push(i?.contentURL)
-              return (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('Stories', {stories: arr,content:i})
-                  }>
-                  <ImageBackground
-                    style={[styles.storyButton]
+        <View style={styles.storiesContainer}>
+          <Text style={styles.storiesText}>Stories</Text>
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+            <View style={styles.storiesView}>
+              {feedState?.stories?.map(i => {
+                let arr = [];
+                arr.push(i?.contentURL);
+                return (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('Stories', {stories: arr, content: i})
                     }>
-                    <Image
-                      source={{uri: arr[0]}}
-                      style={styles.image}
-                    />
-                  </ImageBackground>
-                  <Text style={styles.storyName}>{i?.placeName}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
-      <View style={styles.feedView}>
-        <FlatList
-          style={styles.flatlist}
-          data={postState.postCity}
-          renderItem={({item}) => <FeedsFlatlist data={item} city={Location}/>}
-          keyExtractor={item => item._id}
-        />
-      </View>
+                    <ImageBackground style={[styles.storyButton]}>
+                      <Image source={{uri: arr[0]}} style={styles.image} />
+                    </ImageBackground>
+                    <Text style={styles.storyName}>{i?.placeName}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </View>
+        <View style={styles.feedView}>
+          <FlatList
+            style={styles.flatlist}
+            data={postState.postCity}
+            renderItem={({item}) => (
+              <FeedsFlatlist data={item} city={Location} />
+            )}
+            keyExtractor={item => item._id}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -192,7 +191,7 @@ const styles = StyleSheet.create({
   storyName: {
     alignSelf: 'center',
     marginTop: 5,
-    color:'#fff'
+    color: '#fff',
   },
   feedView: {
     width: windowWidth / 1,

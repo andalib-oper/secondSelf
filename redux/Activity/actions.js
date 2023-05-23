@@ -1,16 +1,13 @@
+import {BASE_URL} from '@env';
+import axios from 'axios';
 import {
-  ACTIVE_ACTIVITY,
-  COMPLETED_ACTIVITY,
   CREATE_ACTIVITY,
   GET_ACTIVITY_BY_CITY,
   GET_ACTIVITY_BY_USERID,
   JOIN_USER,
   REQ_ACTIVITY,
   REQ_FAILURE_ACTIVITY,
-  UPCOMING_ACTIVITY,
 } from './actionTypes';
-import {BASE_URL} from '@env';
-import axios from 'axios';
 
 export const reqActivity = () => ({
   type: REQ_ACTIVITY,
@@ -63,7 +60,7 @@ export const createActivityByUserId = (
       if (response) {
         dispatch(createActivity(response.data));
         dispatch(getActivityByUserId(authId));
-        // console.log("res",response.data)
+        console.log('res', response.data);
       }
     } catch (err) {
       console.log('request failed activity');
@@ -80,6 +77,7 @@ export const getActivityByCity = city => {
       const response = await axios.get(BASE_URL + `/api/activity?city=${city}`);
       if (response) {
         dispatch(activityByCity(response.data));
+        console.log('response at activity', response.data);
       }
     } catch (err) {
       console.log('request failed activity');
@@ -98,6 +96,7 @@ export const getActivityByUserId = authId => {
       );
       if (response) {
         dispatch(activityByUserId(response.data));
+        console.log('activitybyuserid', response.data);
       }
     } catch (err) {
       console.log('request failed activity');
@@ -107,7 +106,7 @@ export const getActivityByUserId = authId => {
   };
 };
 
-export const joinUsersInActivity = (activityId, authId,city) => {
+export const joinUsersInActivity = (activityId, authId, city) => {
   return async dispatch => {
     dispatch(reqActivity());
     console.log('act', activityId);
